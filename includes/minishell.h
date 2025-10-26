@@ -60,6 +60,7 @@ typedef struct s_parse_flags
 
 // Parsing Tokenlist
 t_token				*parse_tokens_from_string(const char *arguments);
+t_token				*create_token_list(const char *arguments);
 t_token				*add_token_list(t_token *head, const char *arguments);
 void				assign_all_token_types(t_token *head);
 

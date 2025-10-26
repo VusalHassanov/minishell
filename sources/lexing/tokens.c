@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/21 21:29:19 by martin           ###   ########.fr       */
+/*   Updated: 2025/10/26 16:47:12 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,36 +103,5 @@ t_token	*create_token_list(const char *arguments)
 	return (head);
 }
 
-// void	expand_and_filter_tokens(t_token *head)
-// {
-// 	t_token	*current;
-// 	char	*temp;
 
-// 	current = head;
-// 	while (current)
-// 	{
-// 		if (current->type == TOKEN_DOUBLE_QUOTE)
-// 		{
-// 			//expand value
-// 		}
-// 		else if (current->type == TOKEN_SINGLE_QUOTE)
-// 		{
-// 			//expand value
-// 		}
-// 		else if (current->type == TOKEN_MIXED_QUOTE)
-// 		{
-// 			//expand value
-// 		}
-// 		current = current->next;
-// 	}
-// }
 
-t_token	*parse_tokens_from_string(const char *arguments)
-{
-	t_token	*head;
-
-	head = create_token_list(arguments);
-	assign_all_token_types(head);
-	// expand_and_filter_tokens(head);
-	return (head);
-}
