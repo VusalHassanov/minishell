@@ -6,13 +6,51 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/26 16:47:12 by martin           ###   ########.fr       */
+/*   Updated: 2025/10/26 21:30:16 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_token_string(const char *arguments, t_parse_flags *status)
+static t_token	*create_token_node(const char *argument)
+{
+	t_token			*token;
+	unsigned int	len;
+
+	token = ft_calloc(1, sizeof(t_token));
+	if (token == NULL)
+		return (NULL);
+	token->next = NULL;
+	len = ft_strlen(argument);
+	if (argument)
+	{
+		token->value = ft_calloc(sizeof(char), len + 1);
+		ft_strlcpy(token->value, argument, len + 1);
+	}
+	return (token);
+}
+
+static t_token	*add_token_list(t_token *head, const char *arguments)
+{
+	t_token	*new_node;
+	t_token	*temp;
+
+	new_node = create_token_node(arguments);
+	if (!new_node)
+		return (NULL);
+	if (!head)
+		head = new_node;
+	else
+	{
+		temp = head;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new_node;
+	}
+	return (head);
+}
+
+static char	*get_token_string(const char *arguments, t_parse_flags *status)
 {
 	unsigned int	len;
 	char			*result;
@@ -46,34 +84,6 @@ char	*get_token_string(const char *arguments, t_parse_flags *status)
 	return (result);
 }
 
-char	*dquote_handler(char *token_string, t_parse_flags *status)
-{
-	char	*temp;
-	char	*temp2;
-	char	*line;
-
-	while (is_open(status))
-	{
-		line = readline("dquote> ");
-		temp = ft_strjoin(token_string, "\n");
-		if (!temp)
-			return (NULL);
-		temp2 = ft_strjoin(temp, line);
-		if (!temp2)
-		{
-			free(temp);
-			return (NULL);
-		}
-		free(token_string);
-		free(line);
-		free(temp);
-		token_string = temp2;
-		if (is_closed(token_string, status))
-			return (token_string);
-	}
-	return (token_string);
-}
-
 t_token	*create_token_list(const char *arguments)
 {
 	t_token			*head;
@@ -102,6 +112,3 @@ t_token	*create_token_list(const char *arguments)
 	}
 	return (head);
 }
-
-
-

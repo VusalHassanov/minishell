@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_parsing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/21 11:08:20 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/10/27 18:53:59 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,30 +17,17 @@
 void	print_nodes(t_token *head)
 {
 	t_token	*temp;
+	char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND", "TOKEN_PIPE",
+			"TOKEN_REDIR_IN", "TOKEN_REDIR_OUT", "TOKEN_REDIR_APPEND", "TOKEN_HEREDOC",
+			"TOKEN_AND", "TOKEN_OR", NULL};
 
-	char *strings[] = {
-		"TOKEN_NONE",
-		"TOKEN_COMMAND",
-		"TOKEN_PIPE",
-		"TOKEN_REDIR_IN",
-		"TOKEN_REDIR_OUT",
-		"TOKEN_REDIR_APPEND",
-		"TOKEN_HEREDOC",
-		"TOKEN_AND",
-		"TOKEN_OR",
-		"TOKEN_DOUBLE_QUOTE",
-		"TOKEN_SINGLE_QUOTE",
-		"TOKEN_EMPTY",
-		"TOKEN_WORD",
-		NULL};
 	if (!head)
 		return ;
 	temp = head;
 	while (temp)
 	{
-		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE,
-				strings[temp->type],
-				temp->value);
+		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE, strings[temp->type],
+			temp->value);
 		temp = temp->next;
 	}
 }
