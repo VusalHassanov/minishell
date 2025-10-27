@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/27 18:53:59 by martin           ###   ########.fr       */
+/*   Updated: 2025/10/27 22:01:18 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,18 @@
 void	print_nodes(t_token *head)
 {
 	t_token	*temp;
-	char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND", "TOKEN_PIPE",
-			"TOKEN_REDIR_IN", "TOKEN_REDIR_OUT", "TOKEN_REDIR_APPEND", "TOKEN_HEREDOC",
-			"TOKEN_AND", "TOKEN_OR", NULL};
+	char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND",
+			"TOKEN_PIPE", "TOKEN_REDIR_IN", "TOKEN_REDIR_OUT",
+			"TOKEN_REDIR_APPEND", "TOKEN_HEREDOC", "TOKEN_AND", "TOKEN_OR",
+			NULL};
 
 	if (!head)
 		return ;
 	temp = head;
 	while (temp)
 	{
-		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE, strings[temp->type],
-			temp->value);
+		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE,
+			strings[temp->type], temp->value);
 		temp = temp->next;
 	}
 }
@@ -68,19 +69,21 @@ void	argv_handler(int argc, char *argv[])
 
 void	stdout_handler(char *line)
 {
-	t_token	*tokens_single;
+	t_shell	*system;
 	int		len;
 
+	system = ft_calloc(sizeof(t_shell), 1);
 	len = ft_strlen(line);
 	if (len > 0 && line[len - 1] == '\n')
 		line[len - 1] = '\0';
 	if (ft_strlen(line) > 0)
 	{
-		tokens_single = parse_tokens_from_string(line);
-		if (tokens_single)
+		system->token_list = parse_tokens_from_string(line);
+		if (system->token_list)
 		{
-			print_nodes(tokens_single);
-			free_tokens(tokens_single);
+			print_nodes(system->token_list);
+			free_tokens(system->token_list);
+			free(system);
 		}
 	}
 }

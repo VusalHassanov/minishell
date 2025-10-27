@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/10/27 19:09:55 by martin           ###   ########.fr       */
+/*   Updated: 2025/10/27 22:02:47 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,12 @@ void	assign_all_token_types(t_token *head)
 
 t_token	*parse_tokens_from_string(const char *arguments)
 {
-	t_token *head;
+	t_token	*head;
+	t_ast	*ast_root;
 
 	head = create_token_list(arguments);
 	assign_all_token_types(head);
+	ast_root = create_ast(head, NULL);
 	// expand_and_filter_tokens(head);
 	return (head);
 }
