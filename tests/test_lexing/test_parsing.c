@@ -6,13 +6,22 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/27 22:01:18 by martin           ###   ########.fr       */
+/*   Updated: 2025/10/28 13:39:12 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
 #include <signal.h>
+
+void	print_ast(t_ast *head)
+{
+	if (!head)
+		return ;
+	print_ast(head->left);
+	print_ast(head->right);
+	printf("%d\n", head->node_type);
+}
 
 void	print_nodes(t_token *head)
 {
@@ -33,38 +42,13 @@ void	print_nodes(t_token *head)
 	}
 }
 
-void	cleanup_tokens(t_token **tokens, int count)
+void	cleanup_ast(t_ast *node)
 {
-	int	i;
-
-	i = 0;
-	while (i < count)
-	{
-		free_tokens(tokens[i]);
-		i++;
-	}
-	free(tokens);
-}
-
-void	argv_handler(int argc, char *argv[])
-{
-	t_token	**tokens;
-	int		i;
-
-	tokens = ft_calloc(argc, sizeof(t_token *));
-	if (!tokens)
+	if (!node)
 		return ;
-	i = 1;
-	while (i < argc)
-	{
-		printf(YELLOW "[%d] Commandstring:\n%s\n" WHITE, i, argv[i]);
-		tokens[i - 1] = parse_tokens_from_string(argv[i]);
-		if (!tokens[i - 1])
-			return (cleanup_tokens(tokens, i - 1));
-		print_nodes(tokens[i - 1]);
-		i++;
-	}
-	cleanup_tokens(tokens, argc - 1);
+	cleanup_ast(node->left);
+	cleanup_ast(node->right);
+	free(node);
 }
 
 void	stdout_handler(char *line)
@@ -78,11 +62,13 @@ void	stdout_handler(char *line)
 		line[len - 1] = '\0';
 	if (ft_strlen(line) > 0)
 	{
-		system->token_list = parse_tokens_from_string(line);
+		parse_from_string(line, system);
 		if (system->token_list)
 		{
 			print_nodes(system->token_list);
 			free_tokens(system->token_list);
+			print_ast(system->ast_root);
+			cleanup_ast(system->ast_root);
 			free(system);
 		}
 	}
@@ -99,19 +85,12 @@ int	main(int argc, char *argv[])
 	char	*line;
 
 	signal(SIGINT, sigint_handler);
-	if (argc > 1)
+	line = readline("minishell$ ");
+	while (line != NULL)
 	{
-		argv_handler(argc, argv);
-	}
-	else
-	{
+		stdout_handler(line);
+		free(line);
 		line = readline("minishell$ ");
-		while (line != NULL)
-		{
-			stdout_handler(line);
-			free(line);
-			line = readline("minishell$ ");
-		}
 	}
 	return (0);
 }

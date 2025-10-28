@@ -25,83 +25,86 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_HEREDOC,
-}						t_token_type;
+}					t_token_type;
 
 typedef struct s_redir
 {
-	int					type;
-	char				*target;
-}						t_redir;
+	int				type;
+	char			*target;
+}					t_redir;
 
 typedef struct s_ast
 {
-	int					node_type;
-	char				**argv;
-	struct s_redir		*redir;
-	struct s_ast		*left;
-	struct s_ast		*right;
-}						t_ast;
+	int				node_type;
+	char			**argv;
+	struct s_redir	*redir;
+	struct s_ast	*left;
+	struct s_ast	*right;
+}					t_ast;
 
 typedef struct s_shell
 {
-	struct s_token		*token_list;
-	struct s_ast_node	*ast_root;
-}						t_shell;
+	struct s_token	*token_list;
+	struct s_ast	*ast_root;
+}					t_shell;
 
 typedef struct s_token
 {
-	t_token_type		type;
-	char				*value;
-	struct s_token		*next;
-	int					quote_flag;
-}						t_token;
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+	int				quote_flag;
+}					t_token;
 
 typedef struct s_parse_flags
 {
-	unsigned int		double_quote;
-	unsigned int		single_quote;
-}						t_parse_flags;
+	unsigned int	double_quote;
+	unsigned int	single_quote;
+}					t_parse_flags;
 
 // Parsing
-t_token					*parse_tokens_from_string(const char *arguments);
-void					assign_all_token_types(t_token *head);
+// t_token				*parse_tokens_from_string(const char *arguments);
+void				parse_from_string(const char *arguments,
+						t_shell *system);
+void				assign_all_token_types(t_token *head);
 
 // Lexing
-t_token					*create_token_list(const char *arguments);
+t_token				*create_token_list(const char *arguments);
 
 // Lexing Utils
-void					skip_whitespace(const char **string);
-void					free_tokens(t_token *tokens);
-void					assign_status(char character, t_parse_flags *status);
-char					*dquote_handler(char *token_string,
-							t_parse_flags *status);
+void				skip_whitespace(const char **string);
+void				free_tokens(t_token *tokens);
+void				assign_status(char character, t_parse_flags *status);
+char				*dquote_handler(char *token_string, t_parse_flags *status);
 
 // Token Checker 1
-int						is_whitespace(char character);
-int						is_no_quote(t_parse_flags *status);
-int						is_open(t_parse_flags *status);
-int						is_closed(char *string, t_parse_flags *status);
+int					is_whitespace(char character);
+int					is_no_quote(t_parse_flags *status);
+int					is_open(t_parse_flags *status);
+int					is_closed(char *string, t_parse_flags *status);
 
 // Token Checker 2
-int						is_quote(char character);
-int						is_quote_literal(char character, t_parse_flags *status);
-int						is_quote_matching(char character,
-							t_parse_flags *status);
-int						is_shell_operator(char character);
+int					is_quote(char character);
+int					is_quote_literal(char character, t_parse_flags *status);
+int					is_quote_matching(char character, t_parse_flags *status);
+int					is_shell_operator(char character);
+
+// AST
+t_ast				*create_ast(t_token *start, t_token *end);
 
 // Expansion
-void					filter_quotes(char *dest, const char *source,
-							int *quote_flag);
+void				filter_quotes(char *dest, const char *source,
+						int *quote_flag);
 
 // built-ins (please make some note vusal)
-void					setup_parent_signals(void);
-void					setup_child_signals(void);
-void					setup_heredoc_signals(void);
-int						check_signal_received(void);
-int						ft_pwd(void);
-int						ft_echo(char **args);
-int						ft_env(char **envp);
-void					ft_free_split(char **arr);
-int						ft_exit(char **args);
+void				setup_parent_signals(void);
+void				setup_child_signals(void);
+void				setup_heredoc_signals(void);
+int					check_signal_received(void);
+int					ft_pwd(void);
+int					ft_echo(char **args);
+int					ft_env(char **envp);
+void				ft_free_split(char **arr);
+int					ft_exit(char **args);
 
 #endif

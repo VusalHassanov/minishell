@@ -6,14 +6,15 @@
 #    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/10/26 16:56:48 by martin           ###   ########.fr        #
+#    Updated: 2025/10/28 13:45:58 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiling
 NAME = minishell
 CC = cc
-CC_FLAGS = -Wall -Wextra -Werror
+# CC_FLAGS = -Wall -Wextra -Werror
+CC_FLAGS = 
 RL_FLAG = -lreadline
 
 # Libft
