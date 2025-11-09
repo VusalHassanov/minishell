@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/28 13:39:12 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/09 12:00:33 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,61 @@
 #include "minishell.h"
 #include <signal.h>
 
-void	print_ast(t_ast *head)
+#define ROOT 0
+#define LEFT 1
+#define RIGHT 2
+
+void	print_ast(t_ast *head, int depth, int node_position)
 {
+	int	i;
+	int	j;
+
 	if (!head)
 		return ;
-	print_ast(head->left);
-	print_ast(head->right);
-	printf("%d\n", head->node_type);
+	// Einrückung für die aktuelle Tiefe
+	i = 0;
+	while (i < depth)
+	{
+		printf("   ");
+		i++;
+	}
+	if (node_position == LEFT)
+	{
+		printf(BLUE "LEFT:" RESET);
+	}
+	else if (node_position == RIGHT)
+	{
+		printf(BLUE "RIGHT:" RESET);
+	}
+	if (head->node_type == TOKEN_PIPE)
+	{
+		if (depth == 0)
+			printf("ROOT PIPE\n");
+		else
+			printf("PIPE Node\n");
+		print_ast(head->left, depth + 1, LEFT);
+		print_ast(head->right, depth + 1, RIGHT);
+	}
+	else
+	{
+		printf("COMMAND Node:\n");
+		if (head->argv)
+		{
+			i = 0;
+			while (head->argv[i])
+			{
+				// Einrückung für jedes Argument
+				j = 0;
+				while (j <= depth)
+				{
+					printf("   ");
+					j++;
+				}
+				printf("Argument [%d]: [%s]\n", i, head->argv[i]);
+				i++;
+			}
+		}
+	}
 }
 
 void	print_nodes(t_token *head)
@@ -36,20 +84,28 @@ void	print_nodes(t_token *head)
 	temp = head;
 	while (temp)
 	{
-		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE,
+		printf(GREEN "Token Type: [%s]\t\tToken String: [%s]\n" WHITE,
 			strings[temp->type], temp->value);
 		temp = temp->next;
 	}
 }
 
-void	cleanup_ast(t_ast *node)
-{
-	if (!node)
-		return ;
-	cleanup_ast(node->left);
-	cleanup_ast(node->right);
-	free(node);
-}
+// void	cleanup_ast(t_ast *node)
+// {
+// 	int	i;
+
+// 	if (!node)
+// 		return ;
+// 	cleanup_ast(node->left);
+// 	cleanup_ast(node->right);
+// 	i = 0;
+// 	// while (node->argv[i])
+// 	// {
+// 	// 	free(node->argv[i]);
+// 	// 	i++;
+// 	// }
+// 	free(node);
+// }
 
 void	stdout_handler(char *line)
 {
@@ -67,8 +123,8 @@ void	stdout_handler(char *line)
 		{
 			print_nodes(system->token_list);
 			free_tokens(system->token_list);
-			print_ast(system->ast_root);
-			cleanup_ast(system->ast_root);
+			print_ast(system->ast_root, 0, ROOT);
+			// cleanup_ast(system->ast_root);
 			free(system);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/10/27 19:20:07 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/08 19:41:24 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	filter_quotes(t_token *token)
 
 void	expand_token_string(t_token *token)
 {
-	
 }
 
 void	expand_and_filter_tokens(t_token *head)
@@ -64,5 +63,6 @@ void	expand_and_filter_tokens(t_token *head)
 			expand_token_string(current);
 			filter_quotes(current);
 		}
+		current = current->next;
 	}
 }

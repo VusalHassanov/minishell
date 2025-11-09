@@ -37,7 +37,7 @@ typedef struct s_ast
 {
 	int				node_type;
 	char			**argv;
-	struct s_redir	*redir;
+	t_redir			**redir;
 	struct s_ast	*left;
 	struct s_ast	*right;
 }					t_ast;
@@ -63,10 +63,13 @@ typedef struct s_parse_flags
 }					t_parse_flags;
 
 // Parsing
+
 // t_token				*parse_tokens_from_string(const char *arguments);
-void				parse_from_string(const char *arguments,
-						t_shell *system);
+void				parse_from_string(const char *arguments, t_shell *system);
 void				assign_all_token_types(t_token *head);
+
+// Parsing Utils
+int					check_token_syntax(t_token *head);
 
 // Lexing
 t_token				*create_token_list(const char *arguments);
