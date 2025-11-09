@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/26 21:30:16 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/09 16:14:09 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ static char	*get_token_string(const char *arguments, t_parse_flags *status)
 			break ;
 		else if (is_no_quote(status) && is_shell_operator(arguments[len]))
 		{
+			if (len > 0)
+				break ;
 			if (arguments[len] == arguments[len + 1])
 				len = 2;
 			else

@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 19:09:04 by martin            #+#    #+#             */
-/*   Updated: 2025/11/09 12:08:40 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/09 15:11:26 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,15 @@ int	check_token_syntax(t_token *head)
 	prev_type = TOKEN_NONE;
 	if (head->type == TOKEN_PIPE)
 	{
-        printf(RED"First token is a pipe!\n"WHITE);
+		printf(RED "First token is a pipe!\n" WHITE);
 		return (0);
 	}
 	while (head)
 	{
-		if (!is_double_operator(prev_type, head->type))
+		if (!is_double_operator(prev_type, head->type)
+			|| (is_operator_token(head->type) && !head->next))
 		{
-			printf(RED"Invalid Syntax!\n"WHITE);
+			printf(RED "Invalid Syntax!\n" WHITE);
 			return (0);
 		}
 		prev_type = head->type;

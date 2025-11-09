@@ -1,9 +1,11 @@
 
 
 BUG: Double pipe || causes a single token "||" 
-        // no error cause we dont handle OR and AND
+            // no error cause we dont handle OR and AND
 BUG: Segfault AST append_arguments
-        // fixed wrong mem allocation
+            // fixed wrong mem allocation
 Bug: Should a missing argument after | or redirection cause an error?
     e.g. "echo "test" |"
-    
+Bug: use current->next; each token after > has only one character of the whole string
+            //fixed (added a rule to stop the lexing when a redirection operator is inside the input string)
+Bug:

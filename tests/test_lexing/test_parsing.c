@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/09 12:00:33 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/09 17:08:19 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	print_ast(t_ast *head, int depth, int node_position)
 
 	if (!head)
 		return ;
-	// Einrückung für die aktuelle Tiefe
 	i = 0;
 	while (i < depth)
 	{
@@ -43,7 +42,7 @@ void	print_ast(t_ast *head, int depth, int node_position)
 	if (head->node_type == TOKEN_PIPE)
 	{
 		if (depth == 0)
-			printf("ROOT PIPE\n");
+			printf(YELLOW "ROOT PIPE\n" RESET);
 		else
 			printf("PIPE Node\n");
 		print_ast(head->left, depth + 1, LEFT);
@@ -57,7 +56,6 @@ void	print_ast(t_ast *head, int depth, int node_position)
 			i = 0;
 			while (head->argv[i])
 			{
-				// Einrückung für jedes Argument
 				j = 0;
 				while (j <= depth)
 				{
@@ -65,6 +63,22 @@ void	print_ast(t_ast *head, int depth, int node_position)
 					j++;
 				}
 				printf("Argument [%d]: [%s]\n", i, head->argv[i]);
+				i++;
+			}
+		}
+		if (head->redir)
+		{
+			i = 0;
+			while (head->redir[i])
+			{
+				j = 0;
+				while (j <= depth)
+				{
+					printf("   ");
+					j++;
+				}
+				printf("Redirection [%d]: [%d]\t", i, head->redir[i]->type);
+				printf("Target [%d]: [%s]\n", i, head->redir[i]->target);
 				i++;
 			}
 		}
@@ -90,22 +104,37 @@ void	print_nodes(t_token *head)
 	}
 }
 
-// void	cleanup_ast(t_ast *node)
-// {
-// 	int	i;
+void	cleanup_ast(t_ast *node)
+{
+	int	i;
 
-// 	if (!node)
-// 		return ;
-// 	cleanup_ast(node->left);
-// 	cleanup_ast(node->right);
-// 	i = 0;
-// 	// while (node->argv[i])
-// 	// {
-// 	// 	free(node->argv[i]);
-// 	// 	i++;
-// 	// }
-// 	free(node);
-// }
+	if (!node)
+		return ;
+	cleanup_ast(node->left);
+	cleanup_ast(node->right);
+	if (node->argv)
+	{
+		i = 0;
+		while (node->argv[i])
+		{
+			free(node->argv[i]);
+			i++;
+		}
+		free(node->argv);
+	}
+	if (node->redir)
+	{
+		i = 0;
+		while (node->redir[i])
+		{
+			free(node->redir[i]->target);
+			free(node->redir[i]);
+			i++;
+		}
+		free(node->redir);
+	}
+	free(node);
+}
 
 void	stdout_handler(char *line)
 {
@@ -124,7 +153,7 @@ void	stdout_handler(char *line)
 			print_nodes(system->token_list);
 			free_tokens(system->token_list);
 			print_ast(system->ast_root, 0, ROOT);
-			// cleanup_ast(system->ast_root);
+			cleanup_ast(system->ast_root);
 			free(system);
 		}
 	}
