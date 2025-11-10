@@ -71,6 +71,9 @@ void				assign_all_token_types(t_token *head);
 // Parsing Utils
 int					check_token_syntax(t_token *head);
 
+// AST utils
+void				cleanup_ast(t_ast *root);
+
 // Lexing
 t_token				*create_token_list(const char *arguments);
 

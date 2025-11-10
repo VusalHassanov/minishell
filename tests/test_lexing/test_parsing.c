@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/09 17:08:19 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/10 12:56:26 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,50 @@
 #define LEFT 1
 #define RIGHT 2
 
+char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND", "TOKEN_PIPE",
+		"TOKEN_REDIR_IN", "TOKEN_REDIR_OUT", "TOKEN_REDIR_APPEND",
+		"TOKEN_HEREDOC", "TOKEN_AND", "TOKEN_OR", NULL};
+		
+
+void	print_argv(char **string, int depth)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (string[i])
+	{
+		j = 0;
+		while (j <= depth)
+		{
+			printf("   ");
+			j++;
+		}
+		printf("Argument [%d]: [%s]\n", i, string[i]);
+		i++;
+	}
+}
+
+void	print_redir(t_redir **node, int depth)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (node[i])
+	{
+		j = 0;
+		while (j <= depth)
+		{
+			printf("   ");
+			j++;
+		}
+		printf("Redirection [%d]: [%s]\t", i, strings[node[i]->type]);
+		printf("Target [%d]: [%s]\n", i, node[i]->target);
+		i++;
+	}
+}
+
 void	print_ast(t_ast *head, int depth, int node_position)
 {
 	int	i;
@@ -26,19 +70,12 @@ void	print_ast(t_ast *head, int depth, int node_position)
 	if (!head)
 		return ;
 	i = 0;
-	while (i < depth)
-	{
+	while (i++ < depth)
 		printf("   ");
-		i++;
-	}
 	if (node_position == LEFT)
-	{
 		printf(BLUE "LEFT:" RESET);
-	}
 	else if (node_position == RIGHT)
-	{
 		printf(BLUE "RIGHT:" RESET);
-	}
 	if (head->node_type == TOKEN_PIPE)
 	{
 		if (depth == 0)
@@ -52,46 +89,15 @@ void	print_ast(t_ast *head, int depth, int node_position)
 	{
 		printf("COMMAND Node:\n");
 		if (head->argv)
-		{
-			i = 0;
-			while (head->argv[i])
-			{
-				j = 0;
-				while (j <= depth)
-				{
-					printf("   ");
-					j++;
-				}
-				printf("Argument [%d]: [%s]\n", i, head->argv[i]);
-				i++;
-			}
-		}
+			print_argv(head->argv, depth);
 		if (head->redir)
-		{
-			i = 0;
-			while (head->redir[i])
-			{
-				j = 0;
-				while (j <= depth)
-				{
-					printf("   ");
-					j++;
-				}
-				printf("Redirection [%d]: [%d]\t", i, head->redir[i]->type);
-				printf("Target [%d]: [%s]\n", i, head->redir[i]->target);
-				i++;
-			}
-		}
+			print_redir(head->redir, depth);
 	}
 }
 
 void	print_nodes(t_token *head)
 {
 	t_token	*temp;
-	char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND",
-			"TOKEN_PIPE", "TOKEN_REDIR_IN", "TOKEN_REDIR_OUT",
-			"TOKEN_REDIR_APPEND", "TOKEN_HEREDOC", "TOKEN_AND", "TOKEN_OR",
-			NULL};
 
 	if (!head)
 		return ;
@@ -102,38 +108,6 @@ void	print_nodes(t_token *head)
 			strings[temp->type], temp->value);
 		temp = temp->next;
 	}
-}
-
-void	cleanup_ast(t_ast *node)
-{
-	int	i;
-
-	if (!node)
-		return ;
-	cleanup_ast(node->left);
-	cleanup_ast(node->right);
-	if (node->argv)
-	{
-		i = 0;
-		while (node->argv[i])
-		{
-			free(node->argv[i]);
-			i++;
-		}
-		free(node->argv);
-	}
-	if (node->redir)
-	{
-		i = 0;
-		while (node->redir[i])
-		{
-			free(node->redir[i]->target);
-			free(node->redir[i]);
-			i++;
-		}
-		free(node->redir);
-	}
-	free(node);
 }
 
 void	stdout_handler(char *line)
