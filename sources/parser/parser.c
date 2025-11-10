@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/10 13:30:55 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/10 14:30:40 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	assign_all_token_types(t_token *head)
 	}
 }
 
+// need return value for main
 void	parse_from_string(const char *arguments, t_shell *system)
 {
 	system->token_list = create_token_list(arguments);
