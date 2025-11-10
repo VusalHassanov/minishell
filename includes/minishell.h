@@ -1,48 +1,52 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+# include "libft.h"
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <signal.h>
-# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 # include <sys/wait.h>
-# include "libft.h"
+# include <unistd.h>
+
+# define QUOTE_NONE 0
+# define QUOTE_OPEN 1
+# define TOKEN_DOUBLE_QUOTE 2
+# define TOKEN_SINGLE_QUOTE 3
 
 typedef enum e_token_type
 {
 	TOKEN_NONE,
+	TOKEN_WORD,
 	TOKEN_COMMAND,
 	TOKEN_PIPE,
 	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_HEREDOC,
-	TOKEN_AND,
-	TOKEN_OR,
-	TOKEN_DOUBLE_QUOTE,
-	TOKEN_SINGLE_QUOTE,
-	TOKEN_MIXED_QUOTE,
-	TOKEN_EMPTY,
-	TOKEN_WORD
 }					t_token_type;
 
-typedef struct s_tree
+typedef struct s_redir
 {
-	struct s_token	*token;
-	struct s_tree	*left;
-	struct tree_s	*right;
-}					t_tree;
+	int				type;
+	char			*target;
+}					t_redir;
+
+typedef struct s_ast
+{
+	int				node_type;
+	char			**argv;
+	t_redir			**redir;
+	struct s_ast	*left;
+	struct s_ast	*right;
+}					t_ast;
 
 typedef struct s_shell
 {
 	struct s_token	*token_list;
-	struct s_tree	*binary_tree;
+	struct s_ast	*ast_root;
 }					t_shell;
-
-// Parsing
-# define QUOTE_NONE 0
-# define QUOTE_OPEN 1
 
 typedef struct s_token
 {
@@ -58,41 +62,55 @@ typedef struct s_parse_flags
 	unsigned int	single_quote;
 }					t_parse_flags;
 
-// Parsing Tokenlist
-t_token				*parse_tokens_from_string(const char *arguments);
-t_token				*create_token_list(const char *arguments);
-t_token				*add_token_list(t_token *head, const char *arguments);
+// Parsing
+
+// t_token				*parse_tokens_from_string(const char *arguments);
+void				parse_from_string(const char *arguments, t_shell *system);
 void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
-void				filter_quotes(char *dest, const char *source,
-						int *quote_flag);
+int					check_token_syntax(t_token *head);
+
+// AST utils
+void				cleanup_ast(t_ast *root);
+
+// Lexing
+t_token				*create_token_list(const char *arguments);
+
+// Lexing Utils
 void				skip_whitespace(const char **string);
 void				free_tokens(t_token *tokens);
 void				assign_status(char character, t_parse_flags *status);
+char				*dquote_handler(char *token_string, t_parse_flags *status);
 
-//Token Checker 1
+// Token Checker 1
 int					is_whitespace(char character);
 int					is_no_quote(t_parse_flags *status);
 int					is_open(t_parse_flags *status);
 int					is_closed(char *string, t_parse_flags *status);
 
-//Token Checker 2
+// Token Checker 2
 int					is_quote(char character);
 int					is_quote_literal(char character, t_parse_flags *status);
 int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
 
+// AST
+t_ast				*create_ast(t_token *start, t_token *end);
+
+// Expansion
+void				filter_quotes(char *dest, const char *source,
+						int *quote_flag);
 
 // built-ins (please make some note vusal)
-void	setup_parent_signals(void);
-void	setup_child_signals(void);
-void	setup_heredoc_signals(void);
-int	    check_signal_received(void);
-int     ft_pwd();
-int	    ft_echo(char **args);
-int 	ft_env(char **envp);
-void	ft_free_split(char **arr);
-int	    ft_exit(char **args);
+void				setup_parent_signals(void);
+void				setup_child_signals(void);
+void				setup_heredoc_signals(void);
+int					check_signal_received(void);
+int					ft_pwd(void);
+int					ft_echo(char **args);
+int					ft_env(char **envp);
+void				ft_free_split(char **arr);
+int					ft_exit(char **args);
 
 #endif

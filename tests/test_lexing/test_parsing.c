@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_parsing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/21 11:08:20 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/11/10 12:56:26 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,86 +14,121 @@
 #include "minishell.h"
 #include <signal.h>
 
+#define ROOT 0
+#define LEFT 1
+#define RIGHT 2
+
+char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND", "TOKEN_PIPE",
+		"TOKEN_REDIR_IN", "TOKEN_REDIR_OUT", "TOKEN_REDIR_APPEND",
+		"TOKEN_HEREDOC", "TOKEN_AND", "TOKEN_OR", NULL};
+		
+
+void	print_argv(char **string, int depth)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (string[i])
+	{
+		j = 0;
+		while (j <= depth)
+		{
+			printf("   ");
+			j++;
+		}
+		printf("Argument [%d]: [%s]\n", i, string[i]);
+		i++;
+	}
+}
+
+void	print_redir(t_redir **node, int depth)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (node[i])
+	{
+		j = 0;
+		while (j <= depth)
+		{
+			printf("   ");
+			j++;
+		}
+		printf("Redirection [%d]: [%s]\t", i, strings[node[i]->type]);
+		printf("Target [%d]: [%s]\n", i, node[i]->target);
+		i++;
+	}
+}
+
+void	print_ast(t_ast *head, int depth, int node_position)
+{
+	int	i;
+	int	j;
+
+	if (!head)
+		return ;
+	i = 0;
+	while (i++ < depth)
+		printf("   ");
+	if (node_position == LEFT)
+		printf(BLUE "LEFT:" RESET);
+	else if (node_position == RIGHT)
+		printf(BLUE "RIGHT:" RESET);
+	if (head->node_type == TOKEN_PIPE)
+	{
+		if (depth == 0)
+			printf(YELLOW "ROOT PIPE\n" RESET);
+		else
+			printf("PIPE Node\n");
+		print_ast(head->left, depth + 1, LEFT);
+		print_ast(head->right, depth + 1, RIGHT);
+	}
+	else
+	{
+		printf("COMMAND Node:\n");
+		if (head->argv)
+			print_argv(head->argv, depth);
+		if (head->redir)
+			print_redir(head->redir, depth);
+	}
+}
+
 void	print_nodes(t_token *head)
 {
 	t_token	*temp;
 
-	char *strings[] = {
-		"TOKEN_NONE",
-		"TOKEN_COMMAND",
-		"TOKEN_PIPE",
-		"TOKEN_REDIR_IN",
-		"TOKEN_REDIR_OUT",
-		"TOKEN_REDIR_APPEND",
-		"TOKEN_HEREDOC",
-		"TOKEN_AND",
-		"TOKEN_OR",
-		"TOKEN_DOUBLE_QUOTE",
-		"TOKEN_SINGLE_QUOTE",
-		"TOKEN_EMPTY",
-		"TOKEN_WORD",
-		NULL};
 	if (!head)
 		return ;
 	temp = head;
 	while (temp)
 	{
-		printf(GREEN "Token Type: [%s]\tToken String: [%s]\n" WHITE,
-				strings[temp->type],
-				temp->value);
+		printf(GREEN "Token Type: [%s]\t\tToken String: [%s]\n" WHITE,
+			strings[temp->type], temp->value);
 		temp = temp->next;
 	}
 }
 
-void	cleanup_tokens(t_token **tokens, int count)
-{
-	int	i;
-
-	i = 0;
-	while (i < count)
-	{
-		free_tokens(tokens[i]);
-		i++;
-	}
-	free(tokens);
-}
-
-void	argv_handler(int argc, char *argv[])
-{
-	t_token	**tokens;
-	int		i;
-
-	tokens = ft_calloc(argc, sizeof(t_token *));
-	if (!tokens)
-		return ;
-	i = 1;
-	while (i < argc)
-	{
-		printf(YELLOW "[%d] Commandstring:\n%s\n" WHITE, i, argv[i]);
-		tokens[i - 1] = parse_tokens_from_string(argv[i]);
-		if (!tokens[i - 1])
-			return (cleanup_tokens(tokens, i - 1));
-		print_nodes(tokens[i - 1]);
-		i++;
-	}
-	cleanup_tokens(tokens, argc - 1);
-}
-
 void	stdout_handler(char *line)
 {
-	t_token	*tokens_single;
+	t_shell	*system;
 	int		len;
 
+	system = ft_calloc(sizeof(t_shell), 1);
 	len = ft_strlen(line);
 	if (len > 0 && line[len - 1] == '\n')
 		line[len - 1] = '\0';
 	if (ft_strlen(line) > 0)
 	{
-		tokens_single = parse_tokens_from_string(line);
-		if (tokens_single)
+		parse_from_string(line, system);
+		if (system->token_list)
 		{
-			print_nodes(tokens_single);
-			free_tokens(tokens_single);
+			print_nodes(system->token_list);
+			free_tokens(system->token_list);
+			print_ast(system->ast_root, 0, ROOT);
+			cleanup_ast(system->ast_root);
+			free(system);
 		}
 	}
 }
@@ -109,19 +144,12 @@ int	main(int argc, char *argv[])
 	char	*line;
 
 	signal(SIGINT, sigint_handler);
-	if (argc > 1)
+	line = readline("minishell$ ");
+	while (line != NULL)
 	{
-		argv_handler(argc, argv);
-	}
-	else
-	{
+		stdout_handler(line);
+		free(line);
 		line = readline("minishell$ ");
-		while (line != NULL)
-		{
-			stdout_handler(line);
-			free(line);
-			line = readline("minishell$ ");
-		}
 	}
 	return (0);
 }

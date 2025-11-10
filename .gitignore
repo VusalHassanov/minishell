@@ -1,0 +1,27 @@
+# Compiled object files
+*.o
+*.obj
+
+# Compiled libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+minishell
+
+# Build directories
+objects/
+
+# Test executables
+tests/running_test/*
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
