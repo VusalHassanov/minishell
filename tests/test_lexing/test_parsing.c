@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/10 12:56:26 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/10 13:04:09 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ void	print_redir(t_redir **node, int depth)
 			printf("   ");
 			j++;
 		}
-		printf("Redirection [%d]: [%s]\t", i, strings[node[i]->type]);
-		printf("Target [%d]: [%s]\n", i, node[i]->target);
+		printf(CYAN"Redirection [%d]: [%s]\t"RESET, i, strings[node[i]->type]);
+		printf(CYAN"Target [%d]: [%s]\n"RESET, i, node[i]->target);
 		i++;
 	}
 }

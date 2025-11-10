@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/10 12:45:23 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/10 13:30:55 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	parse_from_string(const char *arguments, t_shell *system)
 	if (!check_token_syntax(system->token_list))
 	{
 		// add error handling here (like free the list)
-		free_tokens(system->token_list);
+		// free_tokens(system->token_list);
 		return ;
 	}
 	system->ast_root = create_ast(system->token_list, NULL);
