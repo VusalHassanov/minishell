@@ -102,15 +102,23 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				filter_quotes(char *dest, const char *source,
 						int *quote_flag);
 
-// built-ins (please make some note vusal)
+//Signals
+void				handle_sigint(int sig);
+int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
-void				setup_heredoc_signals(void);
-int					check_signal_received(void);
-int					ft_pwd(void);
-int					ft_echo(char **args);
+
+// built-ins
+int 				ft_cd(t_token *args, char ***envp);
+int 				ft_echo(t_token *args);
 int					ft_env(char **envp);
-void				ft_free_split(char **arr);
-int					ft_exit(char **args);
+int 				ft_exit_tokens(t_token *args);
+int 				ft_export(t_token *args, char ***envp);
+int 				ft_pwd();
+int 				ft_unset(t_token *args, char ***envp);
+
+
+
+
 
 #endif
