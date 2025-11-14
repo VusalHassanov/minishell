@@ -117,8 +117,35 @@ int 				ft_export(t_token *args, char ***envp);
 int 				ft_pwd();
 int 				ft_unset(t_token *args, char ***envp);
 
+// Helper functions
+void				ft_free_split(char **arr);
+char				*ft_strjoin_three(const char *s1, const char *sep, const char *s2);
 
+// Echo helper
+int					is_n_flag(const char *arg);
 
+// Exit helper
+int					is_numeric(const char *str);
+
+// CD helper
+char				*cd_get_target(t_token *args, char **envp);
+
+// Export helpers
+void				export_print_all(char **envp);
+void				split_name_value(const char *str, char **name, char **value);
+
+// Env helpers
+char				**ft_envdup(char **envp);
+char				*ft_getenv(char **envp, const char *name);
+char				**ft_env_add(char **envp, char *new_var);
+int					ft_env_replace(char **envp, const char *name, char *new_var);
+int					ft_setenv(char ***envp, const char *name, const char *value);
+
+// Env helpers 2
+void				update_env(char ***envp, char *oldpwd);
+char				**envp_remove(char **envp, const char *name);
+void				bubble_sort_envp(char **envp);
+int					is_valid_name(const char *name);
 
 
 #endif

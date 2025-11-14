@@ -6,13 +6,13 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:21 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 16:19:56 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/14 23:02:57 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_echo_tokens(t_token *args)
+int ft_echo(t_token *args)
 {
     t_token *current = args->next; // skip "echo"
     int newline = 1;
@@ -25,13 +25,13 @@ int ft_echo_tokens(t_token *args)
     }
     while (current)
     {
-        ft_printf("%s", current->value);
+        printf("%s", current->value);
         if (current->next)
-            ft_printf(" ");
+            printf(" ");
         current = current->next;
     }
     if (newline)
-        ft_printf("\n");
+        printf("\n");
     return 0;
 }
 

@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:49:02 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 16:06:48 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/14 22:25:47 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 void update_env(char ***envp, char *oldpwd)
 {
     char *newpwd = getcwd(NULL, 0);
-    if (!newpwd)
-        return (perror("cd"), void());
+    if (!newpwd){
+        perror("cd");
+        return;
+    }
+        
 
     ft_setenv(envp, "OLDPWD", oldpwd);
     ft_setenv(envp, "PWD", newpwd);

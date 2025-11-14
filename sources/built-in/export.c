@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:50 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 15:21:13 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/14 22:38:12 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int ft_export(t_token *args, char ***envp)
     {
         split_name_value(current->value, &name, &value);
         if (!is_valid_name(name))
-            ft_printf("export: '%s': not a valid identifier\n", current->value);
+            printf("export: '%s': not a valid identifier\n", current->value);
         else if (value)
             ft_setenv(envp, name, value);
         free(name);

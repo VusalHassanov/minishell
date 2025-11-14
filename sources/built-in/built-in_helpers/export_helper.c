@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 14:53:19 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 16:06:41 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/14 23:01:33 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void export_print_all(char **envp)
     i = 0;
     while (envp[i])
     {
-        ft_printf("declare -x %s\n", envp[i]);
+        printf("declare -x %s\n", envp[i]);
         i++;
     }
 }
