@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int ft_exit_tokens(t_token *args)
+int ft_exit(t_token *args)
 {
     t_token *arg;
     int status;

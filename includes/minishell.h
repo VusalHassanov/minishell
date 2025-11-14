@@ -112,7 +112,7 @@ void				setup_child_signals(void);
 int 				ft_cd(t_token *args, char ***envp);
 int 				ft_echo(t_token *args);
 int					ft_env(char **envp);
-int 				ft_exit_tokens(t_token *args);
+int 				ft_exit(t_token *args);
 int 				ft_export(t_token *args, char ***envp);
 int 				ft_pwd();
 int 				ft_unset(t_token *args, char ***envp);
