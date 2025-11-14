@@ -102,15 +102,50 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				filter_quotes(char *dest, const char *source,
 						int *quote_flag);
 
-// built-ins (please make some note vusal)
+//Signals
+void				handle_sigint(int sig);
+int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
-void				setup_heredoc_signals(void);
-int					check_signal_received(void);
-int					ft_pwd(void);
-int					ft_echo(char **args);
+
+// built-ins
+int 				ft_cd(t_token *args, char ***envp);
+int 				ft_echo(t_token *args);
 int					ft_env(char **envp);
+int 				ft_exit(t_token *args);
+int 				ft_export(t_token *args, char ***envp);
+int 				ft_pwd();
+int 				ft_unset(t_token *args, char ***envp);
+
+// Helper functions
 void				ft_free_split(char **arr);
-int					ft_exit(char **args);
+char				*ft_strjoin_three(const char *s1, const char *sep, const char *s2);
+
+// Echo helper
+int					is_n_flag(const char *arg);
+
+// Exit helper
+int					is_numeric(const char *str);
+
+// CD helper
+char				*cd_get_target(t_token *args, char **envp);
+
+// Export helpers
+void				export_print_all(char **envp);
+void				split_name_value(const char *str, char **name, char **value);
+
+// Env helpers
+char				**ft_envdup(char **envp);
+char				*ft_getenv(char **envp, const char *name);
+char				**ft_env_add(char **envp, char *new_var);
+int					ft_env_replace(char **envp, const char *name, char *new_var);
+int					ft_setenv(char ***envp, const char *name, const char *value);
+
+// Env helpers 2
+void				update_env(char ***envp, char *oldpwd);
+char				**envp_remove(char **envp, const char *name);
+void				bubble_sort_envp(char **envp);
+int					is_valid_name(const char *name);
+
 
 #endif
