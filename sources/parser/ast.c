@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/11/09 17:09:10 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/11 12:14:39 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_redir	**append_redir(t_token **current, t_token *end, t_redir **redirection)
 		}
 		redirection = temp;
 		redirection[count] = ft_calloc(sizeof(t_redir), 1);
-		(*redirection)->type = (*current)->type;
+		redirection[count]->type = (*current)->type;
 		redirection[count]->target = ft_strdup((*current)->next->value);
 		count++;
 	}

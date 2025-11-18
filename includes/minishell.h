@@ -98,6 +98,9 @@ int					is_shell_operator(char character);
 // AST
 t_ast				*create_ast(t_token *start, t_token *end);
 
+// Execution
+void				execute_ast(t_ast *node, int depth);
+
 // Expansion
 void				filter_quotes(char *dest, const char *source,
 						int *quote_flag);

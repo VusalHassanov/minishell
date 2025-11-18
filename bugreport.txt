@@ -14,3 +14,6 @@ Bug: use current->next; each token after > has only one character of the whole s
 
 Bug: "parse_from_string" needs a return value if it fails. Otherwise segfault (invalid ptr) or memleak.
 
+Bug: parser doesn't divide between different redirection types. it just init with token redir in or NONE
+        NOTE: Error appears from testfile (doenst print properly)
+            // fixed (initiliased with pointer not index in ast.c)
