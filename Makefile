@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
+#    By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/10/28 13:45:58 by martin           ###   ########.fr        #
+#    Updated: 2025/11/14 23:21:33 by vhasanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,10 @@ LIBFT = $(LIBFT_DIR)/libft.a
 LEXING_SRC = $(wildcard sources/lexing/*.c)
 PARSER_SRC = $(wildcard sources/parser/*.c)
 EXPAND_SRC = # add later
-BUILTIN_SRC = $(wildcard sources/built-in/*c)
+BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
+              $(wildcard sources/built-in/built-in_helpers/*.c) \
+              $(wildcard sources/built-in/built-in_helpers/env_helper/*.c)
+SIGNALS_SRC = $(wildcard sources/signals/*.c)
 PIPES_SRC = # add later
 REDIRECT_SRC = # add later
 MAIN_SRC = # add later
@@ -35,7 +38,7 @@ SRC_DIR = sources
 INC_DIR	= includes
 OBJ_DIR = objects
 
-SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(PIPES_SRC)
+SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 # Test Builds (without main minishell program!)
@@ -72,7 +75,7 @@ test_parser: $(TEST_PARSER_OBJ) $(LIBFT)
 	@mkdir -p $(TEST_PATH)
 	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes tests/test_lexing/test_parsing.c $(RL_FLAG) $(TEST_PARSER_OBJ) $(LIBFT) -o $(TEST_PATH)/$@
 
-test_builtin: $(TEST_)
+test_builtin: $(TEST_BUILTIN_OBJ) $(LIBFT)
 	@mkdir -p $(TEST_PATH)
 	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes tests/test_builtin/test_built-in.c $(RL_FLAG) $(TEST_PARSER_OBJ) $(LIBFT) -o $(TEST_PATH)/$@
 
