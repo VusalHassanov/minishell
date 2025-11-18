@@ -68,7 +68,7 @@ typedef struct s_parse_flags
 // Parsing
 
 // t_token				*parse_tokens_from_string(const char *arguments);
-void				parse_from_string(const char *arguments, t_shell *system);
+int					parse_from_string(const char *arguments, t_shell *system);
 void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
@@ -103,6 +103,9 @@ t_ast				*create_ast(t_token *start, t_token *end);
 
 // Execution
 void				execute_ast(t_ast *node, int depth);
+
+// Pipes
+void				create_pipe(t_ast *node, int depth);
 
 // Expansion
 void				filter_quotes(char *dest, const char *source,

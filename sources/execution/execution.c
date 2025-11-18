@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/18 16:07:38 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 18:34:01 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ int	execution_handler(t_ast *node)
 	// build logic for processing command leafs
 	// after setup all FDs are in proper position,
 	// so argv just has to be executed
-	if (!set_up_redirections(node))
-	{
-		return (0);
-	}
+	// if (!set_up_redirections(node))
+	// {
+	// 	return (0);
+	// }
 	if (is_builtin(node->argv[0]))
 	{
 		// call builtin handler

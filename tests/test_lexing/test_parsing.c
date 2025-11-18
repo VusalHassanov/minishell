@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/18 16:09:27 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 18:11:45 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 char	*strings[] = {"TOKEN_NONE", "TOKEN_WORD", "TOKEN_COMMAND", "TOKEN_PIPE",
 		"TOKEN_REDIR_IN", "TOKEN_REDIR_OUT", "TOKEN_REDIR_APPEND",
 		"TOKEN_HEREDOC", "TOKEN_AND", "TOKEN_OR", NULL};
-		
 
 void	print_argv(char **string, int depth)
 {
@@ -56,8 +55,9 @@ void	print_redir(t_redir **node, int depth)
 			printf("   ");
 			j++;
 		}
-		printf(CYAN"Redirection [%d]: [%s]\t"RESET, i, strings[node[i]->type]);
-		printf(CYAN"Target [%d]: [%s]\n"RESET, i, node[i]->target);
+		printf(CYAN "Redirection [%d]: [%s]\t" RESET, i,
+			strings[node[i]->type]);
+		printf(CYAN "Target [%d]: [%s]\n" RESET, i, node[i]->target);
 		i++;
 	}
 }
@@ -126,9 +126,11 @@ void	stdout_handler(char *line)
 		if (system->token_list)
 		{
 			print_nodes(system->token_list);
-			free_tokens(system->token_list);
+			if (system->token_list)
+				free_tokens(system->token_list);
 			print_ast(system->ast_root, 0, ROOT);
-			cleanup_ast(system->ast_root);
+			if (system->ast_root)
+				cleanup_ast(system->ast_root);
 			free(system);
 		}
 	}
