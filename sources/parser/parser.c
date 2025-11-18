@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/18 18:46:21 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 18:59:04 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ int	parse_from_string(const char *arguments, t_shell *system)
 	assign_all_token_types(system->token_list);
 	if (!check_token_syntax(system->token_list))
 	{
-		printf("reached this level\n");
-		// add error handling here (like free the list)
 		free_tokens(system->token_list);
 		system->token_list = NULL;
 		return (0);
