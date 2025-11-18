@@ -6,13 +6,12 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 13:20:35 by martin            #+#    #+#             */
-/*   Updated: 2025/11/11 13:07:21 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 15:57:40 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <stdio.h>
-
 
 
 // pipe_fd[0] read end
@@ -27,6 +26,7 @@ void	create_pipe(t_ast *node, int depth)
 	left = fork();
 	if (left == 0)
 	{
+		setup_child_signals();
 		dup2(pipe_fd[1], 1);
 		close(pipe_fd[0]);
 		execute_ast(node->left, ++depth);
@@ -36,6 +36,7 @@ void	create_pipe(t_ast *node, int depth)
 	right = fork();
 	if (right == 0)
 	{
+		setup_child_signals();
 		dup2(pipe_fd[0], 0);
 		close(pipe_fd[1]);
 		execute_ast(node->right, ++depth);

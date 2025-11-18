@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:53:33 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/14 22:38:25 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/18 12:09:53 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,3 @@ int ft_unset(t_token *args, char ***envp)
     }
     return 0;
 }
-

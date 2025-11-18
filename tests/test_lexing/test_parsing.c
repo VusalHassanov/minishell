@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/11 12:15:32 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 16:09:27 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void	stdout_handler(char *line)
 	if (ft_strlen(line) > 0)
 	{
 		parse_from_string(line, system);
+		// execute_ast(system->ast->root, 0);
 		if (system->token_list)
 		{
 			print_nodes(system->token_list);

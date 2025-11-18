@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/11 13:24:26 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 16:07:38 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,14 @@ int	execution_handler(t_ast *node)
 	}
 	if (is_builtin(node->argv[0]))
 	{
+		// call builtin handler
+		// execute_buildin(node->argv,)
 	}
 	else
 	{
+		// find the path function to the commands
 		// create child process, call new pgm with execve (needs path!)
+		// execve("PATH/FOLDER/ls", "node->argv[0]", NULL);
 	}
 	return (1);
 }
@@ -95,7 +99,6 @@ void	execute_ast(t_ast *node, int depth)
 	else
 	{
 		printf(RED "COMMAND CALL ON LEVEL [%d]\n" RESET, depth);
-		printf("just imagine i call the execution handler\n");
 		if (!execution_handler(node))
 		{
 			printf("oh no! execution handling error!\n");
