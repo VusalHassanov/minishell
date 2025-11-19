@@ -17,3 +17,4 @@ Bug: "parse_from_string" needs a return value if it fails. Otherwise segfault (i
 Bug: parser doesn't divide between different redirection types. it just init with token redir in or NONE
         NOTE: Error appears from testfile (doenst print properly)
             // fixed (initiliased with pointer not index in ast.c)
+

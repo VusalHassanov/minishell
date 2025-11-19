@@ -107,6 +107,12 @@ void				execute_ast(t_ast *node, int depth);
 // Pipes
 void				create_pipe(t_ast *node, int depth);
 
+// redirections
+int					ft_heredoc(char *delimiter);
+int					ft_redir_append(char *target);
+int					ft_redir_in(char *target);
+int					ft_redir_in(char *target);
+
 // Expansion
 void				filter_quotes(char *dest, const char *source,
 						int *quote_flag);

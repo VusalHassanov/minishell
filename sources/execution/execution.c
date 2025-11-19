@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/18 18:34:01 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/19 12:01:19 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,23 @@ int	set_up_redirections(t_ast *node)
 	int		i;
 	t_redir	**current;
 
-	// setup every type of redirections with FDs.
 	current = node->redir;
 	i = 0;
 	while (current[i])
 	{
 		if (!current[i]->target)
-		{
 			return (0);
-		}
 		if (current[i]->type == TOKEN_REDIR_IN)
-		{
-			// call function with target as argument
-		}
+			ft_redir_in(current[i]->target);
 		else if (current[i]->type == TOKEN_REDIR_APPEND)
-		{
-			// call function with target as argument
-		}
+			ft_redir_append(current[i]->target);
 		else if (current[i]->type == TOKEN_REDIR_OUT)
-		{
-			// call function with target as argument
-		}
+			ft_redir_out(current[i]->target);
 		else if (current[i]->type == TOKEN_HEREDOC)
-		{
-			// call function with target as argument
-		}
+			ft_heredoc(current[i]->target);
 		i++;
 	}
+	return (1);
 }
 
 int	execution_handler(t_ast *node)
@@ -67,10 +57,10 @@ int	execution_handler(t_ast *node)
 	// build logic for processing command leafs
 	// after setup all FDs are in proper position,
 	// so argv just has to be executed
-	// if (!set_up_redirections(node))
-	// {
-	// 	return (0);
-	// }
+	if (!set_up_redirections(node))
+	{
+		return (0);
+	}
 	if (is_builtin(node->argv[0]))
 	{
 		// call builtin handler
