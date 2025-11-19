@@ -6,32 +6,34 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:21 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/14 23:02:57 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/19 19:24:30 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_echo(t_token *args)
+int ft_echo(char **argv)
 {
-    t_token *current = args->next; // skip "echo"
-    int newline = 1;
-
-    if (current && is_n_flag(current->value))
+    int i;
+    int newline;
+    
+    i = 1;
+    newline = 1;
+    while (argv[i] && is_n_flag(argv[i]))
     {
         newline = 0;
-        while (current && is_n_flag(current->value))
-            current = current->next;
+        i++;
     }
-    while (current)
+    while (argv[i])
     {
-        printf("%s", current->value);
-        if (current->next)
+        printf("%s", argv[i]);
+        if (argv[i + 1])
             printf(" ");
-        current = current->next;
+        i++;
     }
     if (newline)
         printf("\n");
     return 0;
 }
+
 

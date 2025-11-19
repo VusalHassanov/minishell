@@ -6,33 +6,40 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:50 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/14 22:38:12 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/19 19:34:22 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_export(t_token *args, char ***envp)
+int ft_export(char **argv, char ***envp)
 {
-    t_token *current;
     char *name;
     char *value;
-
-    if (!args || !args->next)
+    int i;
+    
+    i = 1;
+    if (!argv[i])
     {
         export_print_all(*envp);
         return 0;
     }
-    current = args->next;
-    while (current)
+    while (argv[i])
     {
-        split_name_value(current->value, &name, &value);
+        split_name_value(argv[i], &name, &value);
+
         if (!is_valid_name(name))
-            printf("export: '%s': not a valid identifier\n", current->value);
-        else if (value)
+        {
+            ft_putstr_fd("export: `", 2);
+            ft_putstr_fd(argv[i], 2);
+            ft_putstr_fd("`: not a valid identifier\n", 2);
+        }
+        else if (value != NULL)
             ft_setenv(envp, name, value);
+        else
+            ft_setenv(envp, name, NULL);
         free(name);
-        current = current->next;
+        i++;
     }
     return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:00:00 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/14 22:49:25 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:35:23 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int execute_builtin(t_token *tokens, char ***envp)
     else if (ft_strcmp(tokens->value, "env") == 0)
         return (ft_env(*envp));
     else if (ft_strcmp(tokens->value, "exit") == 0)
-        return (ft_exit_tokens(tokens));
+        return (ft_exit(tokens));
     else if (ft_strcmp(tokens->value, "cd") == 0)
         return (ft_cd(tokens, envp));
     else if (ft_strcmp(tokens->value, "export") == 0)
