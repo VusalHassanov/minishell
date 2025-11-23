@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    test_parsing.sh                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+         #
+#    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/19 14:45:02 by mgunter           #+#    #+#              #
-#    Updated: 2025/10/20 16:37:33 by mgunter          ###   ########.fr        #
+#    Updated: 2025/11/10 13:34:35 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
-FILE="./tests/test_exec/test_parser"
+FILE="./tests/running_test/test_parser"
 
 # Counter for passed/failed tests
 PASSED=0

@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/10 12:45:23 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 18:59:04 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,22 @@ void	assign_all_token_types(t_token *head)
 	}
 }
 
-void	parse_from_string(const char *arguments, t_shell *system)
+int	parse_from_string(const char *arguments, t_shell *system)
 {
 	system->token_list = create_token_list(arguments);
+	if (!system->token_list)
+		return (0);
 	assign_all_token_types(system->token_list);
 	if (!check_token_syntax(system->token_list))
 	{
-		// add error handling here (like free the list)
 		free_tokens(system->token_list);
-		return ;
+		system->token_list = NULL;
+		return (0);
 	}
 	system->ast_root = create_ast(system->token_list, NULL);
+	free_tokens(system->token_list);
+	system->token_list = NULL;
 	if (!system->ast_root)
-		return ;
-	// expand_and_filter_tokens(head);
+		return (0);
+	return (1);
 }

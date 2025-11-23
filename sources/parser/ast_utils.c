@@ -1,32 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 15:53:33 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/18 12:09:53 by martin           ###   ########.fr       */
+/*   Created: 2025/11/10 12:26:29 by martin            #+#    #+#             */
+/*   Updated: 2025/11/10 12:41:16 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_unset(t_token *args, char ***envp)
+void	cleanup_ast(t_ast *root)
 {
-    t_token *current;
+	int	i;
 
-    if (!args || !args->next)
-        return 0;
-
-    current = args->next;
-    while (current)
-    {
-        if (!is_valid_name(current->value))
-            printf("unset: '%s': not a valid identifier\n", current->value);
-        else
-            envp_remove(*envp, current->value);
-        current = current->next;
-    }
-    return 0;
+	if (!root)
+		return ;
+	cleanup_ast(root->left);
+	cleanup_ast(root->right);
+	i = 0;
+	while (root->argv && root->argv[i])
+		free(root->argv[i++]);
+	if (root->argv)
+		free(root->argv);
+	i = 0;
+	while (root->redir && root->redir[i])
+	{
+		free(root->redir[i]->target);
+		free(root->redir[i]);
+		i++;
+	}
+	if (root->redir)
+		free(root->redir);
+	free(root);
 }

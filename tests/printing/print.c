@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_parsing.c                                     :+:      :+:    :+:   */
+/*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/19 13:43:34 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/18 18:11:45 by martin           ###   ########.fr       */
+/*   Created: 2025/11/18 18:48:39 by martin            #+#    #+#             */
+/*   Updated: 2025/11/18 18:49:42 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
-#include <signal.h>
 
 #define ROOT 0
 #define LEFT 1
@@ -108,51 +106,4 @@ void	print_nodes(t_token *head)
 			strings[temp->type], temp->value);
 		temp = temp->next;
 	}
-}
-
-void	stdout_handler(char *line)
-{
-	t_shell	*system;
-	int		len;
-
-	system = ft_calloc(sizeof(t_shell), 1);
-	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	if (ft_strlen(line) > 0)
-	{
-		parse_from_string(line, system);
-		// execute_ast(system->ast->root, 0);
-		if (system->token_list)
-		{
-			print_nodes(system->token_list);
-			if (system->token_list)
-				free_tokens(system->token_list);
-			print_ast(system->ast_root, 0, ROOT);
-			if (system->ast_root)
-				cleanup_ast(system->ast_root);
-			free(system);
-		}
-	}
-}
-
-void	sigint_handler(int signum)
-{
-	(void)signum;
-	exit(0);
-}
-
-int	main(int argc, char *argv[])
-{
-	char	*line;
-
-	signal(SIGINT, sigint_handler);
-	line = readline("minishell$ ");
-	while (line != NULL)
-	{
-		stdout_handler(line);
-		free(line);
-		line = readline("minishell$ ");
-	}
-	return (0);
 }

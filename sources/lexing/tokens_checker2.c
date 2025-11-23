@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_checker2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:16:55 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/21 10:57:57 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/11/10 13:26:29 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	is_shell_operator(char character)
 {
 	int	i;
 	char	operator[] = {
-		'>', '<', '|', '&', '(', ')', 0};
+		'>', '<', '|', 0};
 
 	i = 0;
 	while (operator[i])
