@@ -6,7 +6,7 @@
 #    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/11/18 17:49:38 by martin           ###   ########.fr        #
+#    Updated: 2025/11/19 12:38:39 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
 SIGNALS_SRC = $(wildcard sources/signals/*.c)
 EXEC_SRC = sources/execution/execution.c
 PIPES_SRC = sources/pipes/pipes.c
-REDIRECT_SRC = # add later
+REDIRECT_SRC = $(wildcard sources/redirections/*.c)
 MAIN_SRC = sources/main.c
 
 # Main Build
@@ -39,7 +39,7 @@ SRC_DIR = sources
 INC_DIR	= includes
 OBJ_DIR = objects
 
-SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC)
+SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 # Test Builds (without main minishell program!)

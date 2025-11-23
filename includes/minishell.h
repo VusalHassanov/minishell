@@ -110,7 +110,7 @@ void				create_pipe(t_ast *node, int depth);
 // redirections
 int					ft_heredoc(char *delimiter);
 int					ft_redir_append(char *target);
-int					ft_redir_in(char *target);
+int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
 
 // Expansion

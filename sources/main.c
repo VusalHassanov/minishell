@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/11/18 19:00:59 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/23 14:43:39 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	input_processing(t_shell *system, char *input)
 {
 	if (!parse_from_string(input, system))
 		return (0);
-	execute_ast(system->ast_root, 0);
+	execute_ast(system->ast_root, system);
 	cleanup_ast(system->ast_root);
 	system->ast_root = NULL;
 	return (1);
