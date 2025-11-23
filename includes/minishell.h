@@ -48,6 +48,7 @@ typedef struct s_shell
 	struct s_ast	*ast_root;
 	int				exit_status;
 	char			**envp;
+	int				is_child;
 
 }					t_shell;
 
