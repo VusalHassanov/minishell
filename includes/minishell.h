@@ -48,6 +48,7 @@ typedef struct s_shell
 	struct s_ast	*ast_root;
 	int				exit_status;
 	char			**envp;
+	int				is_child;
 
 }					t_shell;
 
@@ -102,10 +103,12 @@ int					is_shell_operator(char character);
 t_ast				*create_ast(t_token *start, t_token *end);
 
 // Execution
-void				execute_ast(t_ast *node, int depth);
+void				execute_ast(t_ast *node, t_shell *system);
+int					is_builtin(char *command);
+int					execute_builtin(char **argv, char ***envp);
 
 // Pipes
-void				create_pipe(t_ast *node, int depth);
+void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
 int					ft_heredoc(char *delimiter);
@@ -124,27 +127,23 @@ void				setup_parent_signals(void);
 void				setup_child_signals(void);
 
 // built-ins
-int					ft_cd(t_token *args, char ***envp);
-int					ft_echo(t_token *args);
+int					ft_cd(char **args, char ***envp);
+int					ft_echo(char **argv);
 int					ft_env(char **envp);
-int					ft_exit(t_token *args);
-int					ft_export(t_token *args, char ***envp);
+int					ft_exit(char **argv);
+int					ft_export(char **argv, char ***envp);
 int					ft_pwd(void);
-int					ft_unset(t_token *args, char ***envp);
+int					ft_unset(char **argv, char ***envp);
 
-// Helper functions
+// built-in helper
+char				*cd_get_target(char **argv, char **envp);
+int					is_n_flag(const char *arg);
+int					is_numeric(const char *str);
+
+// Helper funtions
 void				ft_free_split(char **arr);
 char				*ft_strjoin_three(const char *s1, const char *sep,
 						const char *s2);
-
-// Echo helper
-int					is_n_flag(const char *arg);
-
-// Exit helper
-int					is_numeric(const char *str);
-
-// CD helper
-char				*cd_get_target(t_token *args, char **envp);
 
 // Export helpers
 void				export_print_all(char **envp);

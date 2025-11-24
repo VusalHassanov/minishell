@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/23 16:54:15 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/24 23:14:18 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ int	execution_handler(t_ast *node, t_shell *system)
 	}
 	if (is_builtin(node->argv[0]))
 	{
-		// call builtin handler
-		// execute_buildin(node->argv,)
+		execute_builtin(node->argv, &(system->envp));
 	}
 	else
 	{
@@ -86,7 +85,7 @@ void	execute_ast(t_ast *node, t_shell *system)
 	{
 		if (!execution_handler(node, system))
 		{
-			printf("oh no! execution handling error!\n");
+			// printf("oh no! execution handling error!\n");
 		}
 	}
 }

@@ -6,7 +6,7 @@
 #    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/11/19 12:38:39 by martin           ###   ########.fr        #
+#    Updated: 2025/11/24 14:33:41 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
               $(wildcard sources/built-in/built-in_helpers/*.c) \
               $(wildcard sources/built-in/built-in_helpers/env_helper/*.c)
 SIGNALS_SRC = $(wildcard sources/signals/*.c)
-EXEC_SRC = sources/execution/execution.c
+EXEC_SRC = $(wildcard sources/execution/*.c)
 PIPES_SRC = sources/pipes/pipes.c
 REDIRECT_SRC = $(wildcard sources/redirections/*.c)
 MAIN_SRC = sources/main.c

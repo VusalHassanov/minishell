@@ -6,13 +6,13 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:47 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/18 14:55:40 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/24 22:49:45 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_pwd()
+int ft_pwd(void)
 {
     char *cwd;
 

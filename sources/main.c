@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/11/23 14:43:39 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/24 14:29:29 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ t_shell	*init_system(char **envp)
 	system = ft_calloc(sizeof(t_shell), 1);
 	if (!system)
 		return (NULL);
-	// setup environment variables
 	system->envp = ft_envdup(envp);
 	if (!system->envp)
 	{
+		free(system);
 		ft_putstr_fd("minishell: failed to initialize environment\n", 2);
 		return (NULL);
 	}
@@ -109,13 +109,17 @@ int	main(int argc, char *argv[], char *envp[])
 	t_shell	*system;
 	int		exit_status;
 
-	exit_status = 0;
-	system = init_system(envp);
-	if (system)
+	if (argc == 1)
 	{
-		exit_status = input_handler(system);
+		exit_status = 0;
+		system = init_system(envp);
+		if (system)
+		{
+			exit_status = input_handler(system);
+		}
+		rl_clear_history();
+		clean_system(system);
+		return (exit_status);
 	}
-	rl_clear_history();
-	clean_system(system);
-	return (exit_status);
+	return (1);
 }

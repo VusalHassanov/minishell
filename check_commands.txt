@@ -1,4 +1,0 @@
-
-
-
-command1 argument1 >> target1 | command2 argument2 > target2 argument3 | command3 argument4 argument5
