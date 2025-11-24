@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:12 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/18 12:04:52 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/18 19:32:38 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_cd(t_token *args, char ***envp)
+int ft_cd(char **args, char ***envp)
 {
     char *oldpwd;
     char *target;

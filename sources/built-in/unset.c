@@ -6,27 +6,28 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:53:33 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/18 12:09:53 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/24 22:54:54 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_unset(t_token *args, char ***envp)
+int ft_unset(char **argv, char ***envp)
 {
-    t_token *current;
-
-    if (!args || !args->next)
+    int i;
+    
+    i = 1;
+    if (!argv)
         return 0;
-
-    current = args->next;
-    while (current)
+    while (argv[i])
     {
-        if (!is_valid_name(current->value))
-            printf("unset: '%s': not a valid identifier\n", current->value);
+        if (!is_valid_name(argv[i]))
+            printf("unset: '%s': not a valid identifier\n", argv[i]);
         else
-            envp_remove(*envp, current->value);
-        current = current->next;
+            envp_remove(*envp, argv[i]);
+        i++;
     }
     return 0;
 }
+
+
