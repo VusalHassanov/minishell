@@ -46,6 +46,10 @@ typedef struct s_shell
 {
 	struct s_token	*token_list;
 	struct s_ast	*ast_root;
+	int				exit_status;
+	char			**envp;
+	int				is_child;
+
 }					t_shell;
 
 typedef struct s_token
@@ -65,7 +69,7 @@ typedef struct s_parse_flags
 // Parsing
 
 // t_token				*parse_tokens_from_string(const char *arguments);
-void				parse_from_string(const char *arguments, t_shell *system);
+int					parse_from_string(const char *arguments, t_shell *system);
 void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
@@ -98,54 +102,67 @@ int					is_shell_operator(char character);
 // AST
 t_ast				*create_ast(t_token *start, t_token *end);
 
+// Execution
+void				execute_ast(t_ast *node, t_shell *system);
+int					is_builtin(char *command);
+int					execute_builtin(char **argv, char ***envp);
+
+// Pipes
+void				create_pipe(t_ast *node, t_shell *system);
+
+// redirections
+int					ft_heredoc(char *delimiter);
+int					ft_redir_append(char *target);
+int					ft_redir_out(char *target);
+int					ft_redir_in(char *target);
+
 // Expansion
 void				filter_quotes(char *dest, const char *source,
 						int *quote_flag);
 
-//Signals
+// Signals
 void				handle_sigint(int sig);
 int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
 
 // built-ins
-int 				ft_cd(t_token *args, char ***envp);
-int 				ft_echo(t_token *args);
+int					ft_cd(char **args, char ***envp);
+int					ft_echo(char **argv);
 int					ft_env(char **envp);
-int 				ft_exit(t_token *args);
-int 				ft_export(t_token *args, char ***envp);
-int 				ft_pwd();
-int 				ft_unset(t_token *args, char ***envp);
+int					ft_exit(char **argv);
+int					ft_export(char **argv, char ***envp);
+int					ft_pwd(void);
+int					ft_unset(char **argv, char ***envp);
 
-// Helper functions
-void				ft_free_split(char **arr);
-char				*ft_strjoin_three(const char *s1, const char *sep, const char *s2);
-
-// Echo helper
+// built-in helper
+char				*cd_get_target(char **argv, char **envp);
 int					is_n_flag(const char *arg);
-
-// Exit helper
 int					is_numeric(const char *str);
 
-// CD helper
-char				*cd_get_target(t_token *args, char **envp);
+// Helper funtions
+void				ft_free_split(char **arr);
+char				*ft_strjoin_three(const char *s1, const char *sep,
+						const char *s2);
 
 // Export helpers
 void				export_print_all(char **envp);
-void				split_name_value(const char *str, char **name, char **value);
+void				split_name_value(const char *str, char **name,
+						char **value);
 
 // Env helpers
 char				**ft_envdup(char **envp);
 char				*ft_getenv(char **envp, const char *name);
 char				**ft_env_add(char **envp, char *new_var);
-int					ft_env_replace(char **envp, const char *name, char *new_var);
-int					ft_setenv(char ***envp, const char *name, const char *value);
+int					ft_env_replace(char **envp, const char *name,
+						char *new_var);
+int					ft_setenv(char ***envp, const char *name,
+						const char *value);
 
 // Env helpers 2
 void				update_env(char ***envp, char *oldpwd);
 char				**envp_remove(char **envp, const char *name);
 void				bubble_sort_envp(char **envp);
 int					is_valid_name(const char *name);
-
 
 #endif
