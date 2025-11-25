@@ -1,0 +1,5 @@
+// Test cases for execution and memory check, add to Makefile + library
+// Fix execution child or main shell -> with flags (checking if current shell is child or main)
+// Expansion
+// Writing full main
+// Error handling

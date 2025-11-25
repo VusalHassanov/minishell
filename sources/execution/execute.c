@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/19 19:41:16 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/22 19:44:29 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,16 @@ int	set_up_redirections(t_ast *node)
 		}
 		i++;
 	}
+	return 1;
 }
 
-int	execution_handler(t_ast *node)
+int	execution_handler(t_ast *node, char ***envp)
 {
 	// build logic for processing command leafs
 	// after setup all FDs are in proper position,
 	// so argv just has to be executed
 	if (!set_up_redirections(node))
-	{
 		return (0);
-	}
 	if (is_builtin(node->argv[0]))
         return execute_builtin(node->argv, envp);
 	else
