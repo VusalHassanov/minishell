@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/24 23:14:18 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/25 12:56:33 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	execution_handler(t_ast *node, t_shell *system)
 	}
 	else
 	{
+		execute_external(node);
 	}
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
