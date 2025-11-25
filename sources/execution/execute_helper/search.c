@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:43:48 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/25 12:25:43 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:46:50 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ char	*get_env_value(char **envp, const char *key)
 
 // BUILD FULL PATH
 
-static char	*build_full_path(char *dir, char *cmd)
+char	*build_full_path(char *dir, char *cmd)
 {
 	return (ft_strjoin_three(dir, "/", cmd));
 }
 
 //SEARCH PATH LIST
 
-static char	*search_paths(char **paths, char *cmd)
+char	*search_paths(char **paths, char *cmd)
 {
 	int		i;
 	char	*full;
