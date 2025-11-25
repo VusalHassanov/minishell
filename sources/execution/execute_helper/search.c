@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:43:48 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/23 15:56:59 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:25:43 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,6 @@ char	*get_env_value(char **envp, const char *key)
 	}
 	return (NULL);
 }
-// Path: bin/sbin
-//home:  Martin/
-//pwd: 
 
 // BUILD FULL PATH
 
