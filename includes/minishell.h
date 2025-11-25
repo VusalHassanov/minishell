@@ -106,6 +106,7 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				execute_ast(t_ast *node, t_shell *system);
 int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
+int					execute_external(t_ast *node);
 
 // Pipes
 void				create_pipe(t_ast *node, t_shell *system);
@@ -115,6 +116,7 @@ int					ft_heredoc(char *delimiter);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
+int					set_up_redirections(t_ast *node);
 
 // Expansion
 void				filter_quotes(char *dest, const char *source,
