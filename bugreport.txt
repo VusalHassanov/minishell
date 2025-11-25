@@ -18,3 +18,4 @@ Bug: parser doesn't divide between different redirection types. it just init wit
         NOTE: Error appears from testfile (doenst print properly)
             // fixed (initiliased with pointer not index in ast.c)
 
+Feature: expansion in heredoc and before commands calls.
