@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/11/24 14:29:29 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/25 13:22:06 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int	input_handler(t_shell *system)
 		}
 		free(input);
 	}
+	return (system->exit_status);
 }
 
 // should minishell quit if environment variable is failed to init?
@@ -104,7 +105,7 @@ t_shell	*init_system(char **envp)
 // cleanup history
 // return (system->exit_status);
 // exit status as single variable since its not possible to reach after system free
-int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[] __attribute__((unused)), char *envp[])
 {
 	t_shell	*system;
 	int		exit_status;
