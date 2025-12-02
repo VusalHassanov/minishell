@@ -4,9 +4,12 @@
 # include "libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <dirent.h>
+# include <errno.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
@@ -106,7 +109,9 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				execute_ast(t_ast *node, t_shell *system);
 int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
-int					execute_external(t_ast *node);
+int					execute_external(t_ast *node, t_shell *system);
+char				*resolve_path(char **envp, char *cmd);
+// int					count_similar_commands(char **envp, char *cmd);
 
 // Pipes
 void				create_pipe(t_ast *node, t_shell *system);
@@ -166,5 +171,6 @@ void				update_env(char ***envp, char *oldpwd);
 char				**envp_remove(char **envp, const char *name);
 void				bubble_sort_envp(char **envp);
 int					is_valid_name(const char *name);
+
 
 #endif
