@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:43:48 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/25 13:52:31 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:07:52 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,3 +98,49 @@ char	*resolve_path(char **envp, char *cmd)
 	ft_free_split(paths);
 	return (result);
 }
+
+/* COUNT SIMILAR COMMANDS */
+// int	count_similar_commands(char **envp, char *cmd)
+// {
+// 	char	*path_var;
+// 	char	**paths;
+// 	int		i;
+// 	int		count;
+// 	DIR		*dir;
+// 	struct dirent *entry;
+// 	char	*full_path;
+// 	size_t	cmd_len;
+
+// 	if (!cmd || !envp)
+// 		return (0);
+// 	path_var = get_env_value(envp, "PATH");
+// 	if (!path_var)
+// 		return (0);
+// 	paths = ft_split(path_var, ':');
+// 	if (!paths)
+// 		return (0);
+// 	count = 0;
+// 	cmd_len = ft_strlen(cmd);
+// 	i = 0;
+// 	while (paths[i])
+// 	{
+// 		dir = opendir(paths[i]);
+// 		if (dir)
+// 		{
+// 			while ((entry = readdir(dir)) != NULL)
+// 			{
+// 				if (entry->d_type == DT_REG && !ft_strncmp(entry->d_name, cmd, cmd_len))
+// 				{
+// 					full_path = build_full_path(paths[i], entry->d_name);
+// 					if (full_path && access(full_path, X_OK) == 0)
+// 						count++;
+// 					free(full_path);
+// 				}
+// 			}
+// 			closedir(dir);
+// 		}
+// 		i++;
+// 	}
+// 	ft_free_split(paths);
+// 	return (count);
+// }
