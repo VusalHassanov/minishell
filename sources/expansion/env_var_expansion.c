@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:54:45 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/04 18:57:58 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/07 18:33:18 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char *expand_env_var(char *str, int pos, char **env)
     var_name = extract_var_name(str, pos + 1);
     if (!var_name)
         return (str);
-    var_value = get_env_value(var_name, env);
+    var_value = get_env_valuee(var_name, env);
     free(var_name);
     if (!var_value)
         return (remove_var(str, pos));
@@ -55,7 +55,7 @@ char *extract_var_name(char *str, int start)
     return (name);
 }
 
-char *get_env_value(char *var_name, char **env)
+char *get_env_valuee(char *var_name, char **env)
 {
     int i;
     int j;

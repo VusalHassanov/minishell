@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/04 18:56:12 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/07 18:33:03 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,25 @@
 // 	- If valid variable name, replace with env value or empty string if not found
 // 5) All functions accepting expansion
 
-char *handle_expansion(char *str, t_shell *system)
+void handle_expansion(char **argv, t_shell *system)
+{
+    int i;
+    char *expanded;
+    
+    i = 0;
+    while (argv[i])
+    {
+        expanded = expand_string(argv[i], system);
+        if (expanded)
+        {
+            free(argv[i]);
+            argv[i] = expanded;
+        }
+        i++;
+    }
+}
+
+char *expand_string(char *str, t_shell *system)
 {
     char *result;
     int i;
@@ -91,26 +109,26 @@ char *expand_variable(char *str, int *i, t_shell *system)
     return (result);
 }
 
-void	filter_quotes(t_token *token)
-{
-}
+// void	filter_quotes(t_token *token)
+// {
+// }
 
-void	expand_token_string(t_token *token)
-{
-}
+// void	expand_token_string(t_token *token)
+// {
+// }
 
-void	expand_and_filter_tokens(t_token *head)
-{
-	t_token	*current;
+// void	expand_and_filter_tokens(t_token *head)
+// {
+// 	t_token	*current;
 
-	current = head;
-	while (current)
-	{
-		if (current->type == TOKEN_WORD)
-		{
-			expand_token_string(current);
-			filter_quotes(current);
-		}
-		current = current->next;
-	}
-}
+// 	current = head;
+// 	while (current)
+// 	{
+// 		if (current->type == TOKEN_WORD)
+// 		{
+// 			expand_token_string(current);
+// 			filter_quotes(current);
+// 		}
+// 		current = current->next;
+// 	}
+// }

@@ -6,7 +6,7 @@
 #    By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/11/25 13:06:13 by vhasanov         ###   ########.fr        #
+#    Updated: 2025/12/07 17:55:10 by vhasanov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 # Modules
 LEXING_SRC = $(wildcard sources/lexing/*.c)
 PARSER_SRC = $(wildcard sources/parser/*.c)
-EXPAND_SRC = # add later
+EXPAND_SRC = $(wildcard sources/expansion/*.c)
 BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
               $(wildcard sources/built-in/built-in_helpers/*.c) \
               $(wildcard sources/built-in/built-in_helpers/env_helper/*.c)
@@ -40,7 +40,7 @@ SRC_DIR = sources
 INC_DIR	= includes
 OBJ_DIR = objects
 
-SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC)
+SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC) $(EXPAND_SRC)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 # Test Builds (without main minishell program!)
