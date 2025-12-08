@@ -128,7 +128,6 @@ int					set_up_redirections(t_ast *node);
 // 						int *quote_flag);
 char 				*expand_env_var(char *str, int pos, char **env);
 char 				*extract_var_name(char *str, int start);
-char 				*get_env_valuee(char *var_name, char **env);
 char 				*expand_exit_status(char *str, int pos, int exit_status);
 void 				copy_exit_status(char *dst, char *src, char *exit_str, int pos);
 void 				handle_expansion(char **argv, t_shell *system);

@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:54:45 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/07 18:33:18 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/08 12:05:20 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char *expand_env_var(char *str, int pos, char **env)
     var_name = extract_var_name(str, pos + 1);
     if (!var_name)
         return (str);
-    var_value = get_env_valuee(var_name, env);
+    var_value = ft_getenv(env, var_name);
     free(var_name);
     if (!var_value)
         return (remove_var(str, pos));
@@ -55,22 +55,22 @@ char *extract_var_name(char *str, int start)
     return (name);
 }
 
-char *get_env_valuee(char *var_name, char **env)
-{
-    int i;
-    int j;
-    int len;
+// char *get_env_valuee(char *var_name, char **env)
+// {
+//     int i;
+//     int j;
+//     int len;
     
-    i = 0;
-    len = ft_strlen(var_name);
-    while (env[i])
-    {
-        j = 0;
-        while (env[i][j] && env[i][j] != '=')
-            j++;
-        if (j == len && ft_strncmp(env[i], var_name, len) == 0)
-            return (env[i] + j + 1);
-        i++;
-    }
-    return (NULL);
-}
+//     i = 0;
+//     len = ft_strlen(var_name);
+//     while (env[i])
+//     {
+//         j = 0;
+//         while (env[i][j] && env[i][j] != '=')
+//             j++;
+//         if (j == len && ft_strncmp(env[i], var_name, len) == 0)
+//             return (env[i] + j + 1);
+//         i++;
+//     }
+//     return (NULL);
+// }

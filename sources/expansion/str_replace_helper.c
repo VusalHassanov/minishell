@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:53:55 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/07 18:32:58 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/08 12:05:10 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,23 @@ int get_var_len(char *str, int pos)
 {
     int len;
     
-    len = 1;
-    pos++;
+    len = 1;  // Count the '$'
+    pos++;    // Move past '$'
+    
+    // If first character after $ is a digit, only count that digit
+    if (ft_isdigit(str[pos]))
+    {
+        len++;  // Just the $ and the digit
+        return (len);
+    }
+    
+    // Otherwise, count all valid variable name characters
     while (str[pos] && (ft_isalnum(str[pos]) || str[pos] == '_'))
     {
         len++;
         pos++;
     }
+    
     return (len);
 }
 
