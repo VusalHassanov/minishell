@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:06 by martin            #+#    #+#             */
-/*   Updated: 2025/11/23 14:27:45 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/25 19:06:24 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ int	ft_redir_in(char *target)
 	if (fd == -1)
 	{
 		perror(target);
-		return (-1);
+		return (ERROR);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
-		return (-1);
+		return (ERROR);
 	}
 	close(fd);
-	return (0);
+	return (SUCCESS);
 }
 
 // int	main(int argc, char *argv[], char *env[])

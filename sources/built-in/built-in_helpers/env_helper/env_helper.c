@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 13:00:28 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 16:15:38 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/25 14:51:12 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_getenv(char **envp, const char *name)
     
 	if (!envp || !name)
 		return (NULL);
-	len = strlen(name);
+	len = ft_strlen(name);
 	i = 0;
 	while (envp[i])
 	{

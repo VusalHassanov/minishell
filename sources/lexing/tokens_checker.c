@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_checker.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:08:30 by mgunter           #+#    #+#             */
-/*   Updated: 2025/10/20 17:36:12 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/11/25 19:04:18 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	is_no_quote(t_parse_flags *status)
 {
 	if (status->double_quote == QUOTE_NONE
 		&& status->single_quote == QUOTE_NONE)
-		return (1);
-	return (0);
+		return (TRUE);
+	return (FALSE);
 }
 
 // Checks if the on character pointing quote is opened
@@ -31,8 +31,8 @@ int	is_open(t_parse_flags *status)
 {
 	if (status->double_quote == QUOTE_OPEN
 		|| status->single_quote == QUOTE_OPEN)
-		return (1);
-	return (0);
+		return (TRUE);
+	return (FALSE);
 }
 
 int	is_closed(char *string, t_parse_flags *status)
@@ -50,6 +50,6 @@ int	is_closed(char *string, t_parse_flags *status)
 		string++;
 	}
 	if (!is_open(status))
-		return (1);
-	return (0);
+		return (TRUE);
+	return (FALSE);
 }

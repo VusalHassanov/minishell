@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/18 18:59:04 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/25 18:57:15 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	assign_token_type(t_token *token, t_token_type prev_type)
 		token->type = TOKEN_WORD;
 }
 
-void	assign_all_token_types(t_token *head)
+static void	assign_all_token_types(t_token *head)
 {
 	t_token			*current;
 	t_token_type	prev_type;
@@ -49,18 +49,18 @@ int	parse_from_string(const char *arguments, t_shell *system)
 {
 	system->token_list = create_token_list(arguments);
 	if (!system->token_list)
-		return (0);
+		return (ERROR);
 	assign_all_token_types(system->token_list);
-	if (!check_token_syntax(system->token_list))
+	if (check_token_syntax(system->token_list) == ERROR)
 	{
 		free_tokens(system->token_list);
 		system->token_list = NULL;
-		return (0);
+		return (ERROR);
 	}
 	system->ast_root = create_ast(system->token_list, NULL);
 	free_tokens(system->token_list);
 	system->token_list = NULL;
 	if (!system->ast_root)
-		return (0);
-	return (1);
+		return (ERROR);
+	return (SUCCESS);
 }

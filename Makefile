@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+         #
+#    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/11/25 13:06:13 by vhasanov         ###   ########.fr        #
+#    Updated: 2025/11/30 21:09:59 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ EXEC_SRC = $(wildcard sources/execution/*.c) \
 			$(wildcard sources/execution/external/*.c)
 PIPES_SRC = sources/pipes/pipes.c
 REDIRECT_SRC = $(wildcard sources/redirections/*.c)
+EXPAND_SRC = $(wildcard sources/expansion/*.c)
 MAIN_SRC = sources/main.c
 
 # Main Build
@@ -40,7 +41,7 @@ SRC_DIR = sources
 INC_DIR	= includes
 OBJ_DIR = objects
 
-SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC)
+SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC) $(EXPAND_SRC)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 # Test Builds (without main minishell program!)
@@ -51,6 +52,9 @@ TEST_PARSER_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_PARSER_SRC))
 
 TEST_BUILTIN_SRC = $(BUILTIN_SRC)
 TEST_BUILTIN_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_BUILTIN_SRC))
+
+# Default target
+all: $(NAME)
 
 # Build libft
 $(LIBFT):
@@ -64,9 +68,6 @@ $(OBJ_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes -c $< -o $@
-
-# Main target
-all: $(NAME)
 
 # Build main executable
 $(NAME): $(OBJ) $(LIBFT)

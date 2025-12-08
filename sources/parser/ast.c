@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/11/11 12:14:39 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/25 19:37:13 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	is_redirection_operator(int token_type)
 }
 
 // append redirections on multiple function calls since 2nd word after red ist again argv
-t_redir	**append_redir(t_token **current, t_token *end, t_redir **redirection)
+static t_redir	**append_redir(t_token **current, t_redir **redirection)
 {
 	t_redir	**temp;
 	int		count;
@@ -86,7 +86,7 @@ void	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 		}
 		else if (is_redirection_operator(current->type))
 		{
-			ast_node->redir = append_redir(&current, end, ast_node->redir);
+			ast_node->redir = append_redir(&current, ast_node->redir);
 		}
 		else
 			current = current->next;

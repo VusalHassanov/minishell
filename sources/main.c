@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/11/25 13:22:06 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/11/25 18:54:35 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ void	clean_system(t_shell *system)
 // print_ast(system->ast_root, 0, 0);
 int	input_processing(t_shell *system, char *input)
 {
-	if (!parse_from_string(input, system))
-		return (0);
+	if (parse_from_string(input, system) == ERROR)
+		return (ERROR);
 	execute_ast(system->ast_root, system);
 	cleanup_ast(system->ast_root);
 	system->ast_root = NULL;
-	return (1);
+	return (SUCCESS);
 }
 // readline stdin
 // check signals received (signal status)
@@ -122,5 +122,5 @@ int	main(int argc, char *argv[] __attribute__((unused)), char *envp[])
 		clean_system(system);
 		return (exit_status);
 	}
-	return (1);
+	return (ERROR);
 }

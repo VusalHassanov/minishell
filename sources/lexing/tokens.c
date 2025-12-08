@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/25 13:03:25 by martin           ###   ########.fr       */
+/*   Updated: 2025/11/30 16:05:07 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ t_token	*create_token_list(const char *arguments)
 			break ;
 		token_string = get_token_string(arguments, &status);
 		original_len = ft_strlen(token_string);
-		// if (is_open(&status))
-		// 	token_string = dquote_handler(token_string, &status);
+		if (is_open(&status))
+			token_string = dquote_handler(token_string, &status);
 		if (original_len > 0)
 			head = add_token_list(head, token_string);
 		free(token_string);

@@ -15,6 +15,12 @@
 # define TOKEN_DOUBLE_QUOTE 2
 # define TOKEN_SINGLE_QUOTE 3
 
+# define SUCCESS 0
+# define FAILURE 1
+# define ERROR -1
+# define FALSE 0
+# define TRUE 1
+
 typedef enum e_token_type
 {
 	TOKEN_NONE,
@@ -67,10 +73,8 @@ typedef struct s_parse_flags
 }					t_parse_flags;
 
 // Parsing
-
-// t_token				*parse_tokens_from_string(const char *arguments);
 int					parse_from_string(const char *arguments, t_shell *system);
-void				assign_all_token_types(t_token *head);
+// void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
 int					check_token_syntax(t_token *head);
@@ -92,10 +96,11 @@ int					is_whitespace(char character);
 int					is_no_quote(t_parse_flags *status);
 int					is_open(t_parse_flags *status);
 int					is_closed(char *string, t_parse_flags *status);
+int					is_quote_literal(char character, t_parse_flags *status);
 
 // Token Checker 2
 int					is_quote(char character);
-int					is_quote_literal(char character, t_parse_flags *status);
+// int					is_quote_literal(char character, t_parse_flags *status);
 int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
 
@@ -106,21 +111,22 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				execute_ast(t_ast *node, t_shell *system);
 int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
-int					execute_external(t_ast *node);
-
+int					execute_external(t_ast *node, char **envp, int is_child,
+						int *backup_fds);
+int					ft_reset_fds(int *fd);
 // Pipes
 void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
-int					ft_heredoc(char *delimiter);
+int					ft_heredoc(char *delimiter, char **envp);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
-int					set_up_redirections(t_ast *node);
 
 // Expansion
-void				filter_quotes(char *dest, const char *source,
-						int *quote_flag);
+char				*expand_string(char *line, char **envp);
+// void				filter_quotes(char *dest, const char *source,
+// 						int *quote_flag);
 
 // Signals
 void				handle_sigint(int sig);
@@ -166,5 +172,8 @@ void				update_env(char ***envp, char *oldpwd);
 char				**envp_remove(char **envp, const char *name);
 void				bubble_sort_envp(char **envp);
 int					is_valid_name(const char *name);
+
+// search
+char				*resolve_path(char **envp, char *cmd);
 
 #endif
