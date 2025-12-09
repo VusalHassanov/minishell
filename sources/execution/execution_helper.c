@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 19:18:16 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/30 17:13:41 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/09 21:44:00 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,19 @@ int	ft_reset_fds(int *fd)
 	}
 	close(fd[1]);
 	return (SUCCESS);
+}
+
+int	ft_backup_fds(int *fd)
+{
+	fd[0] = dup(STDIN_FILENO);
+	fd[1] = dup(STDOUT_FILENO);
+	if (fd[0] == -1 || fd[1] == -1)
+	{
+		perror("dup fail");
+		return (ERROR);
+	}
+	else
+		return (SUCCESS);
 }
 
 int	execute_builtin(char **argv, char ***envp)
