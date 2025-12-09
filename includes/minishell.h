@@ -124,8 +124,20 @@ int					ft_redir_in(char *target);
 int					set_up_redirections(t_ast *node);
 
 // Expansion
-void				filter_quotes(char *dest, const char *source,
-						int *quote_flag);
+// void				filter_quotes(char *dest, const char *source,
+// 						int *quote_flag);
+char 				*expand_env_var(char *str, int pos, char **env);
+char 				*extract_var_name(char *str, int start);
+char 				*expand_exit_status(char *str, int pos, int exit_status);
+void 				copy_exit_status(char *dst, char *src, char *exit_str, int pos);
+void 				handle_expansion(char **argv, t_shell *system);
+char 				*expand_string(char *str, t_shell *system);
+char 				*expand_variable(char *str, int *i, t_shell *system);
+int 				get_var_len(char *str, int pos);
+void 				copy_with_var(char *dst, char *src, char *value, int pos);
+char 				*remove_var(char *str, int pos);
+char 				*replace_var(char *str, int pos, char *value);
+void 				copy_without_var(char *dst, char *src, int pos, int var_len);
 
 // Signals
 void				handle_sigint(int sig);

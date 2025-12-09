@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/11/30 19:18:31 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/07 18:44:27 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,15 @@ int	execution_handler(t_ast *node, t_shell *system)
 		close(fd[1]);
 		return (0);
 	}
+	handle_expansion(node->argv, system);
 	if (is_builtin(node->argv[0]))
 	{
-		execute_builtin(node->argv, &(system->envp));
+
+		system->exit_status = execute_builtin(node->argv, &(system->envp));
 	}
 	else
 	{
-		execute_external(node, system);
+		system->exit_status = execute_external(node, system);
 	}
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
