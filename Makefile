@@ -6,7 +6,7 @@
 #    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/11/30 21:09:59 by martin           ###   ########.fr        #
+#    Updated: 2025/12/09 21:16:23 by martin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 # Modules
 LEXING_SRC = $(wildcard sources/lexing/*.c)
 PARSER_SRC = $(wildcard sources/parser/*.c)
-EXPAND_SRC = # add later
+EXPAND_SRC = $(wildcard sources/expansion/*.c)
 BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
               $(wildcard sources/built-in/built-in_helpers/*.c) \
               $(wildcard sources/built-in/built-in_helpers/env_helper/*.c)

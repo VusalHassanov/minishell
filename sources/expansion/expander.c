@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/11/30 16:27:41 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/09 21:19:53 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,42 +43,78 @@
 // 	dest[j] = '\0';
 // }
 
-// only if source is quoted, call this function
-char	*filter_quotes(const char *source)
-{
-	char			*dest;
-	int				i;
-	int				j;
-	t_parse_flags	status;
+// 1) String quoted, not quoted, double quoted handling
+// 2) Iterate through string, No dollar sign, return
+// 3) If there is a dollar sign, but quote follows it return String itself without quotes
+// 4) Check after dollar sign:
+// 	- If quote, return string without quotes
+// 	- If question mark, replace with exit status
+// 	- If digit, ignore dollar sign and digit + outside quotes
+// 	- If valid variable name, replace with env value or empty string if not found
+// 5) All functions accepting expansion
 
-	i = 0;
-	j = 0;
-	status = (t_parse_flags){0};
-	dest = ft_calloc(sizeof(char), ft_strlen(source) + 1);
-	if (!dest)
-		return (NULL);
-	while (source[i])
-	{
-		if (is_quote_literal(source[i], &status))
-			dest[j++] = source[i];
-		else if (is_quote(source[i]))
-		{
-			if (is_open(&status))
-				status = (t_parse_flags){0};
-			else
-				assign_status(source[i], &status);
-		}
-	}
-	return (dest);
+void handle_expansion(char **argv, t_shell *system)
+{
+    int i;
+    char *expanded;
+    
+    i = 0;
+    while (argv[i])
+    {
+        expanded = expand_string(argv[i], system);
+        if (expanded)
+        {
+            free(argv[i]);
+            argv[i] = expanded;
+        }
+        i++;
+    }
 }
 
-// int	main(void)
-// {
-// 	char	string[] = "\"Hello ' World ' \"";
+char *expand_string(char *str, t_shell *system)
+{
+    char *result;
+    int i;
+    
+    i = 0;
+    result = ft_strdup(str);
+    if (!result)
+        return (NULL);
+    while (result[i])
+    {
+        if (result[i] == '$')
+            result = expand_variable(result, &i, system);
+        else
+            i++;
+    }
+    return (result);
+}
 
-// 	printf("Before: %s\n", string);
-// 	printf("After: %s\n", filter_quotes(string));
-// 	return (0);
+char *expand_variable(char *str, int *i, t_shell *system)
+{
+    char *result;
+    
+    if (str[*i + 1] == '?')
+        result = expand_exit_status(str, *i, system->exit_status);
+    else if (str[*i + 1] == '\0' || str[*i + 1] == ' ')
+    {
+        (*i)++;
+        return (str);
+    }
+    else
+        result = expand_env_var(str, *i, system->envp);
+    if (result != str)
+        free(str);
+    *i = 0;
+    return (result);
+}
+
+// void	filter_quotes(t_token *token)
+// {
+// }
+
+// void	expand_token_string(t_token *token)
+// {
 // }
 
 // void	expand_and_filter_tokens(t_token *head)
@@ -96,46 +132,3 @@ char	*filter_quotes(const char *source)
 // 		current = current->next;
 // 	}
 // }
-
-// ft_getenv for finding the pointer to the variable name
-// char	*expand_string(char *line, char **envp)
-// {
-// 	// int		i;
-// 	// int		variable_len;
-// 	// char	*result;
-// 	// char	*variable_name;
-// 	// i = 0;
-// 	// while (line[i])
-// 	// {
-// 	// 	if (line[i] == '$')
-// 	// 	{
-// 	// 		while (ft_isprint)
-// 	// 		{
-// 	// 			variable_len++;
-// 	// 			i++;
-// 	// 		}
-// 	// 	}
-// 	// }
-// 	return (line);
-// }
-
-
-
-
-
-
-void expansion(char **argv)
-{
-	int i;
-
-	i = 0;
-	while (argv[i])
-	{
-		//if $ occures in argv[i] (and check syntax)
-			// argv[i] = expand_variable(argv[i]);
-		//if (quoted(argv[i]))
-			// argv[i] = filter_quotes(argv[i]);
-		i++;
-	}
-}
-

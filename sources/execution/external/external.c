@@ -6,101 +6,81 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/30 17:25:36 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/09 21:19:28 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// int execute_external(t_ast *node)
-// {
-//     pid_t pid;
-//     int status;
-
-//     pid = fork();
-//     if (pid < 0)
-//     {
-//         perror("fork");
-//         return (1);
-//     }
-//     if (pid == 0)
-//     {
-//         // if (!set_up_redirections(node))
-//         //     exit(EXIT_FAILURE);
-//         execvp(node->argv[0], node->argv);
-//         perror("execvp");
-//         exit(EXIT_FAILURE);
-//     }
-//     waitpid(pid, &status, 0);
-//     if (WIFEXITED(status))
-//         return (WEXITSTATUS(status));
-//     return (1);
-// }
-
-// int	execute_external(t_ast *node, char **envp, int is_child, int *backup_fds)
-// {
-// 	pid_t	pid;
-// 	int		status;
-
-// 	char	*path;
-// 	path = resolve_path(envp, node->argv[0]);
-// 	if (is_child == 1)
-// 	{
-// 		execvp(path, node->argv);
-// 		perror("execvp");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	else
-// 	{
-// 		pid = fork();
-// 		if (pid < 0)
-// 		{
-// 			perror("fork");
-// 			return (1);
-// 		}
-// 		if (pid == 0)
-// 		{
-// 			if (backup_fds)
-// 			{
-// 				close(backup_fds[0]);
-// 				close(backup_fds[1]);
-// 			}
-// 			execvp(node->argv[0], node->argv);
-// 			perror("execvp");
-// 			exit(EXIT_FAILURE);
-// 		}
-// 		waitpid(pid, &status, 0);
-// 		if (WIFEXITED(status))
-// 			return (WEXITSTATUS(status));
-// 	}
-// 	return (1);
-// }
-
-
-int	execute_external(t_ast *node, char **envp, int is_child, int *backup_fds)
+void print_error_msg(const char *prefix, const char *msg,
+		const char *suffix)
 {
-	char	*path;
+	if (prefix)
+		write(STDERR_FILENO, prefix, ft_strlen(prefix));
+	if (msg)
+		write(STDERR_FILENO, msg, ft_strlen(msg));
+	if (suffix)
+		write(STDERR_FILENO, suffix, ft_strlen(suffix));
+}
 
-	if (is_child != 1)
+void handle_command_not_found(char *cmd)
+{
+	print_error_msg("minishell: ", cmd, ": command not found\n");
+	/* Optional: count similar commands and display suggestion */
+	/* Pass envp if implementing: count_similar_in_path(envp, cmd) */
+}
+
+static void	handle_execve_error(char *cmd, char *cmd_path)
+{
+	print_error_msg("minishell: ", cmd, ": ");
+	perror(NULL);
+	if (cmd_path)
+		free(cmd_path);
+}
+
+void execute_child_process(t_ast *node, t_shell *system)
+{
+	char	*cmd_path;
+
+	if (!node || !node->argv)
 	{
-		ft_putstr_fd("Error: execute_external called in parent process\n", 2);
-		return (ERROR);
+		print_error_msg("minishell: internal error: ",
+			"node or argv is NULL\n", NULL);
+		exit(1);
 	}
-	if (backup_fds)
+	if (!system || !system->envp)
 	{
-		close(backup_fds[0]);
-		close(backup_fds[1]);
+		print_error_msg("minishell: internal error: ",
+			"system or envp is NULL\n", NULL);
+		exit(1);
 	}
-	path = resolve_path(envp, node->argv[0]);
-	if (!path)
+	cmd_path = resolve_path(system->envp, node->argv[0]);
+	if (!cmd_path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putstr_fd(node->argv[0], 2);
-		ft_putstr_fd("\n", 2);
+		handle_command_not_found(node->argv[0]);
 		exit(127);
 	}
-	execvp(path, node->argv);
-	perror("execvp");
-	free(path);
-	exit(EXIT_FAILURE);
+	execve(cmd_path, node->argv, system->envp);
+	handle_execve_error(node->argv[0], cmd_path);
+	exit(126);
+}
+
+int	execute_external(t_ast *node, t_shell *system)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		write(STDERR_FILENO, "minishell: fork: ", 17);
+		perror(NULL);
+		return (1);
+	}
+	if (pid == 0)
+		execute_child_process(node, system);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
 }

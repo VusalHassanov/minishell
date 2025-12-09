@@ -4,9 +4,12 @@
 # include "libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <dirent.h>
+# include <errno.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
@@ -111,9 +114,10 @@ t_ast				*create_ast(t_token *start, t_token *end);
 void				execute_ast(t_ast *node, t_shell *system);
 int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
-int					execute_external(t_ast *node, char **envp, int is_child,
-						int *backup_fds);
-int					ft_reset_fds(int *fd);
+int					execute_external(t_ast *node, t_shell *system);
+char				*resolve_path(char **envp, char *cmd);
+// int					count_similar_commands(char **envp, char *cmd);
+
 // Pipes
 void				create_pipe(t_ast *node, t_shell *system);
 
@@ -124,9 +128,20 @@ int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
 
 // Expansion
-char				*expand_string(char *line, char **envp);
 // void				filter_quotes(char *dest, const char *source,
 // 						int *quote_flag);
+char 				*expand_env_var(char *str, int pos, char **env);
+char 				*extract_var_name(char *str, int start);
+char 				*expand_exit_status(char *str, int pos, int exit_status);
+void 				copy_exit_status(char *dst, char *src, char *exit_str, int pos);
+void 				handle_expansion(char **argv, t_shell *system);
+char 				*expand_string(char *str, t_shell *system);
+char 				*expand_variable(char *str, int *i, t_shell *system);
+int 				get_var_len(char *str, int pos);
+void 				copy_with_var(char *dst, char *src, char *value, int pos);
+char 				*remove_var(char *str, int pos);
+char 				*replace_var(char *str, int pos, char *value);
+void 				copy_without_var(char *dst, char *src, int pos, int var_len);
 
 // Signals
 void				handle_sigint(int sig);
@@ -173,7 +188,5 @@ char				**envp_remove(char **envp, const char *name);
 void				bubble_sort_envp(char **envp);
 int					is_valid_name(const char *name);
 
-// search
-char				*resolve_path(char **envp, char *cmd);
 
 #endif
