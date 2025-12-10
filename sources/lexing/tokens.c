@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/30 16:05:07 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 20:24:25 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,38 @@ static t_token	*add_token_list(t_token *head, const char *arguments)
 	return (head);
 }
 
+static void	handle_quote(const char *arguments, unsigned int len,
+	t_parse_flags *status)
+{
+	if (is_no_quote(status))
+		assign_status(arguments[len], status);
+	else if (is_quote_matching(arguments[len], status))
+		*status = (t_parse_flags){0};
+}
+
+static int	handle_operator(const char *arguments, unsigned int *len)
+{
+	if (*len > 0)
+		return (1);
+	if (arguments[*len] == arguments[*len + 1])
+		*len = 2;
+	else
+		*len = 1;
+	return (1);
+}
+
+static int	should_break(const char *arguments, unsigned int len,
+	t_parse_flags *status)
+{
+	if (!arguments[len])
+		return (1);
+	if (is_no_quote(status) && is_whitespace(arguments[len]))
+		return (1);
+	if (is_no_quote(status) && is_shell_operator(arguments[len]))
+		return (handle_operator(arguments, (unsigned int *)&len));
+	return (0);
+}
+
 static char	*get_token_string(const char *arguments, t_parse_flags *status)
 {
 	unsigned int	len;
@@ -59,25 +91,8 @@ static char	*get_token_string(const char *arguments, t_parse_flags *status)
 	while (arguments[len])
 	{
 		if (is_quote(arguments[len]))
-		{
-			if (is_no_quote(status))
-				assign_status(arguments[len], status);
-			else if (is_quote_matching(arguments[len], status))
-				*status = (t_parse_flags){0};
-		}
-		else if (is_no_quote(status) && is_whitespace(arguments[len]))
-			break ;
-		else if (is_no_quote(status) && is_shell_operator(arguments[len]))
-		{
-			if (len > 0)
-				break ;
-			if (arguments[len] == arguments[len + 1])
-				len = 2;
-			else
-				len = 1;
-			break ;
-		}
-		else if (!arguments[len])
+			handle_quote(arguments, len, status);
+		else if (should_break(arguments, len, status))
 			break ;
 		len++;
 	}
