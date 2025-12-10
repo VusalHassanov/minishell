@@ -6,7 +6,7 @@
 /*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:16:29 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/10 20:24:25 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 21:52:04 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static t_token	*add_token_list(t_token *head, const char *arguments)
 }
 
 static void	handle_quote(const char *arguments, unsigned int len,
-	t_parse_flags *status)
+		t_parse_flags *status)
 {
 	if (is_no_quote(status))
 		assign_status(arguments[len], status);
@@ -59,26 +59,19 @@ static void	handle_quote(const char *arguments, unsigned int len,
 		*status = (t_parse_flags){0};
 }
 
-static int	handle_operator(const char *arguments, unsigned int *len)
-{
-	if (*len > 0)
-		return (1);
-	if (arguments[*len] == arguments[*len + 1])
-		*len = 2;
-	else
-		*len = 1;
-	return (1);
-}
-
 static int	should_break(const char *arguments, unsigned int len,
-	t_parse_flags *status)
+		t_parse_flags *status)
 {
 	if (!arguments[len])
 		return (1);
 	if (is_no_quote(status) && is_whitespace(arguments[len]))
 		return (1);
 	if (is_no_quote(status) && is_shell_operator(arguments[len]))
-		return (handle_operator(arguments, (unsigned int *)&len));
+	{
+		if (len > 0)
+			return (1);
+		return (1);
+	}
 	return (0);
 }
 
@@ -95,6 +88,13 @@ static char	*get_token_string(const char *arguments, t_parse_flags *status)
 		else if (should_break(arguments, len, status))
 			break ;
 		len++;
+	}
+	if (len == 0 && is_shell_operator(arguments[0]))
+	{
+		if (arguments[0] == arguments[1])
+			len = 2;
+		else
+			len = 1;
 	}
 	result = ft_calloc(sizeof(char), len + 1);
 	ft_strlcpy(result, arguments, len + 1);

@@ -26,7 +26,6 @@
 # define LEFT 0
 # define RIGHT 1
 
-
 typedef enum e_token_type
 {
 	TOKEN_NONE,
@@ -80,13 +79,9 @@ typedef struct s_parse_flags
 
 // Parsing
 int					parse_from_string(const char *arguments, t_shell *system);
-// void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
 int					check_token_syntax(t_token *head);
-
-// AST utils
-void				cleanup_ast(t_ast *root);
 
 // Lexing
 t_token				*create_token_list(const char *arguments);
@@ -112,6 +107,10 @@ int					is_shell_operator(char character);
 
 // AST
 t_ast				*create_ast(t_token *start, t_token *end);
+
+// AST utils
+void				cleanup_ast(t_ast *root);
+void				ft_free_redirections(t_redir **redir);
 
 // Execution
 void				execute_ast(t_ast *node, t_shell *system);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 17:21:07 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 22:16:21 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,37 @@ static int	ft_delimiter_is_quoted(char *delimiter)
 
 int	ft_heredoc(char *delimiter, t_shell *system)
 {
-	int		pipe_fd[2] = {
-		0};
+	int		pipe_fd[2] = {0};
 	char	*line;
 	int		expansion;
 	char	*result;
+	// int		interrupt;
 
 	expansion = ft_delimiter_is_quoted(delimiter);
 	pipe(pipe_fd);
 	setup_heredoc_signals();
+	// interrupt = 0;
 	while (1)
 	{
 		line = readline(">");
-		if (!line)
+		// interrupt = check_signal_received();
+		// if (interrupt)
+		// {
+		// 	if (line)
+		// 		free(line);
+		// 	break ;
+		// }
+		// if (!line)
+		// {
+		// 	ft_putendl_fd("minishell: warning: here-document delimited by end-of-file",
+		// 		2);
+		// 	break ;
+		// }
+		if (!ft_strcmp(line, delimiter))
 		{
-		}
-		if (!line || !ft_strcmp(line, delimiter))
+			free(line);
 			break ;
+		}
 		if (expansion == TRUE)
 		{
 			result = expand_string(line, system);
@@ -54,6 +68,12 @@ int	ft_heredoc(char *delimiter, t_shell *system)
 	}
 	setup_parent_signals();
 	close(pipe_fd[1]);
+	// if (interrupt)
+	// {
+	// 	close(pipe_fd[0]);
+	// 	system->exit_status = interrupt;
+	// 	return (ERROR);
+	// }
 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 	{
 		close(pipe_fd[0]);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:19:02 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/10 15:27:05 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 22:12:11 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	handle_heredoc_sigint(int sig)
 {
 	g_signal = sig;
 	write(STDOUT_FILENO, "\n", 1);
-	close(STDIN_FILENO);
+	rl_done = 1;
 }
 
 int	check_signal_received(void)

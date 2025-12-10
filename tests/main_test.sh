@@ -44,4 +44,8 @@ for cmd in "${commands[@]}"; do
 done
 
 
+
+
+
+
 exit

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 17:12:19 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 21:37:39 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,16 @@ int	is_redirection_operator(int token_type)
 {
 	return (token_type == TOKEN_REDIR_IN || token_type == TOKEN_REDIR_APPEND
 		|| token_type == TOKEN_REDIR_OUT || token_type == TOKEN_HEREDOC);
+}
+
+static t_redir	**cleanup_redir_error(t_redir **redir, t_redir *new_redir)
+{
+	if (new_redir)
+		free(new_redir);
+	if (redir)
+		ft_free_redirections(redir);
+	ft_putendl_fd("malloc error: ast.c redir", 2);
+	return (NULL);
 }
 
 static t_redir	**append_redir(t_token **current, t_redir **redirection)
@@ -31,19 +41,28 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection)
 		temp = ft_realloc(redirection, sizeof(t_redir *) * (count + 1),
 				sizeof(t_redir *) * (count + 2));
 		if (!temp)
-		{
-			ft_putendl_fd("malloc error: redir", 2);
-			return (NULL);
-		}
+			return (cleanup_redir_error(redirection, NULL));
 		redirection = temp;
 		redirection[count] = ft_calloc(sizeof(t_redir), 1);
+		if (!redirection[count])
+			return (cleanup_redir_error(redirection, NULL));
 		redirection[count]->type = (*current)->type;
 		redirection[count]->target = ft_strdup((*current)->next->value);
+		if (!redirection[count]->target)
+			return (cleanup_redir_error(redirection, redirection[count]));
 		count++;
 	}
 	(*current) = (*current)->next->next;
 	redirection[count] = NULL;
 	return (redirection);
+}
+
+static char	**cleanup_argv_error(char **argv)
+{
+	ft_putendl_fd("malloc error: ast.c argv", 2);
+	if (argv)
+		ft_free_split(argv);
+	return (NULL);
 }
 
 char	**append_argument(t_token **current, t_token *end, char **argv)
@@ -60,12 +79,11 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 		temp = ft_realloc(argv, sizeof(char *) * (count + 1), sizeof(char *)
 				* (count + 2));
 		if (!temp)
-		{
-			ft_putendl_fd("malloc error: argument list", 2);
-			return (NULL);
-		}
+			return (cleanup_argv_error(argv));
 		argv = temp;
 		argv[count] = ft_strdup((*current)->value);
+		if (!argv[count])
+			return (cleanup_argv_error(argv));
 		count++;
 		*current = (*current)->next;
 	}

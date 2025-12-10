@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 15:44:43 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 22:04:30 by martin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,70 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 	return (1);
 }
 
-int	execution_handler(t_ast *node, t_shell *system)
+void	execute_ast(t_ast *node, t_shell *system)
 {
-	int	fd[2];
-	int status;
-	pid_t pid;
+	int		fd[2];
+	int		status;
+	pid_t	pid;
 
-	handle_expansion(node->argv, system);
-	if (is_builtin(node->argv[0]))
-	{
-		if (system->is_child == 0)
-			ft_backup_fds(fd);
-		set_up_redirections(node, system);
-		system->exit_status = execute_builtin(node->argv, &(system->envp));
-		if(system->is_child == 0)
-			ft_reset_fds(fd);
-		}
+	if (!node)
+		return ;
+	if (node->node_type == TOKEN_PIPE)
+		create_pipe(node, system);
 	else
-		execute_external(node, system);
-	return (FAILURE);
+	{
+		handle_expansion(node->argv, system);
+		if (is_builtin(node->argv[0]))
+		{
+			if (system->is_child == 0)
+				ft_backup_fds(fd);
+			set_up_redirections(node, system);
+			system->exit_status = execute_builtin(node->argv, &(system->envp));
+			if (system->is_child == 0)
+				ft_reset_fds(fd);
+		}
+		else
+			execute_external(node, system);
+	}
 }
+
+// int	execution_handler(t_ast *node, t_shell *system)
+// {
+// 	int		fd[2];
+// 	int		status;
+// 	pid_t	pid;
+
+// 	handle_expansion(node->argv, system);
+// 	if (is_builtin(node->argv[0]))
+// 	{
+// 		if (system->is_child == 0)
+// 			ft_backup_fds(fd);
+// 		set_up_redirections(node, system);
+// 		system->exit_status = execute_builtin(node->argv, &(system->envp));
+// 		if (system->is_child == 0)
+// 			ft_reset_fds(fd);
+// 		return (SUCCESS);
+// 	}
+// 	else
+// 		execute_external(node, system);
+// 	return (FAILURE);
+// }
+
+// void	execute_ast(t_ast *node, t_shell *system)
+// {
+// 	if (!node)
+// 		return ;
+// 	if (node->node_type == TOKEN_PIPE)
+// 		create_pipe(node, system);
+// 	else
+// 	{
+// 		if (execution_handler(node, system) == FAILURE)
+// 		{
+// 			ft_putendl_fd("Execution error", 2);
+// 		}
+// 	}
+// }
+
 // int	execution_handler(t_ast *node, t_shell *system)
 // {
 // 	int	fd[2];
@@ -97,23 +141,3 @@ int	execution_handler(t_ast *node, t_shell *system)
 // 	}
 // 	return (FAILURE);
 // }
-
-void	execute_ast(t_ast *node, t_shell *system)
-{
-	if (!node)
-	{
-		return ;
-	}
-	if (node->node_type == TOKEN_PIPE)
-	{
-		create_pipe(node, system);
-	}
-	else
-	{
-		if (execution_handler(node, system) == FAILURE)
-		{
-			// printf("oh no! execution handling error!\n");
-		}
-	}
-}
-
