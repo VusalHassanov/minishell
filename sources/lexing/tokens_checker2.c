@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:16:55 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/10 16:08:55 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 17:16:42 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,12 @@ int	is_quote_matching(char character, t_parse_flags *status)
 int	is_shell_operator(char character)
 {
 	int		i;
-	char	operator[] = {'>', '<', '|', 0};
+	char	operator[4];
 
+	operator[0] = '|';
+	operator[1] = '<';
+	operator[2] = '>';
+	operator[3] = 0;
 	i = 0;
 	while (operator[i])
 	{

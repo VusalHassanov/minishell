@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 16:23:23 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 17:12:19 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection)
 				sizeof(t_redir *) * (count + 2));
 		if (!temp)
 		{
-			// implement error handling
+			ft_putendl_fd("malloc error: redir", 2);
 			return (NULL);
 		}
 		redirection = temp;
@@ -61,7 +61,7 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 				* (count + 2));
 		if (!temp)
 		{
-			// add free function if realloc causes an error
+			ft_putendl_fd("malloc error: argument list", 2);
 			return (NULL);
 		}
 		argv = temp;
@@ -93,29 +93,29 @@ void	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 
 t_ast	*create_ast(t_token *start, t_token *end)
 {
-    t_token	*pipe;
-    t_ast	*node;
+	t_token	*pipe;
+	t_ast	*node;
 
-    if (!start || start == end)
-        return (NULL);
-    node = ft_calloc(sizeof(t_ast), 1);
-    if (!node)
-        return (NULL);
-    pipe = start;
-    while (pipe && pipe != end && pipe->type != TOKEN_PIPE)
-        pipe = pipe->next;
-    if (pipe && pipe != end && pipe->type == TOKEN_PIPE)
-    {
-        node->node_type = TOKEN_PIPE;
-        node->left = create_ast(start, pipe);
-        node->right = create_ast(pipe->next, end);
-    }
-    else
-    {
-        node->node_type = TOKEN_COMMAND;
-        assign_ast_node(start, end, node);
-    }
-    return (node);
+	if (!start || start == end)
+		return (NULL);
+	node = ft_calloc(sizeof(t_ast), 1);
+	if (!node)
+		return (NULL);
+	pipe = start;
+	while (pipe && pipe != end && pipe->type != TOKEN_PIPE)
+		pipe = pipe->next;
+	if (pipe && pipe != end && pipe->type == TOKEN_PIPE)
+	{
+		node->node_type = TOKEN_PIPE;
+		node->left = create_ast(start, pipe);
+		node->right = create_ast(pipe->next, end);
+	}
+	else
+	{
+		node->node_type = TOKEN_COMMAND;
+		assign_ast_node(start, end, node);
+	}
+	return (node);
 }
 
 // t_ast	*create_ast(t_token *start, t_token *end)

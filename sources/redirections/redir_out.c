@@ -46,6 +46,3 @@ int	ft_redir_out(char *target)
 // 	dup2(fd_stdout, STDOUT_FILENO);
 // 	return (0);
 // }
-
-
-

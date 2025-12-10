@@ -3,56 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   env_var_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:54:45 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/08 12:05:20 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:29:10 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *expand_env_var(char *str, int pos, char **env)
+char	*expand_env_var(char *str, int pos, char **env)
 {
-    char *var_name;
-    char *var_value;
-    char *result;
-    
-    var_name = extract_var_name(str, pos + 1);
-    if (!var_name)
-        return (str);
-    var_value = ft_getenv(env, var_name);
-    free(var_name);
-    if (!var_value)
-        return (remove_var(str, pos));
-    result = replace_var(str, pos, var_value);
-    return (result);
+	char	*var_name;
+	char	*var_value;
+	char	*result;
+
+	var_name = extract_var_name(str, pos + 1);
+	if (!var_name)
+		return (str);
+	var_value = ft_getenv(env, var_name);
+	free(var_name);
+	if (!var_value)
+		return (remove_var(str, pos));
+	result = replace_var(str, pos, var_value);
+	return (result);
 }
 
-char *extract_var_name(char *str, int start)
+char	*extract_var_name(char *str, int start)
 {
-    char *name;
-    int i;
-    int len;
-    
-    i = start;
-    len = 0;
-    while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
-    {
-        len++;
-        i++;
-    }
-    name = malloc(len + 1);
-    if (!name)
-        return (NULL);
-    i = 0;
-    while (i < len)
-    {
-        name[i] = str[start + i];
-        i++;
-    }
-    name[i] = '\0';
-    return (name);
+	char	*name;
+	int		i;
+	int		len;
+
+	i = start;
+	len = 0;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+	{
+		len++;
+		i++;
+	}
+	name = malloc(len + 1);
+	if (!name)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		name[i] = str[start + i];
+		i++;
+	}
+	name[i] = '\0';
+	return (name);
 }
 
 // char *get_env_valuee(char *var_name, char **env)
@@ -60,7 +60,7 @@ char *extract_var_name(char *str, int start)
 //     int i;
 //     int j;
 //     int len;
-    
+
 //     i = 0;
 //     len = ft_strlen(var_name);
 //     while (env[i])

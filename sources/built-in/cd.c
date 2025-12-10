@@ -12,43 +12,40 @@
 
 #include "minishell.h"
 
-static void cd_error(const char *arg)
+static void	cd_error(const char *arg)
 {
-    write(2, "minishell: cd: ", 15);
-    if (arg)
-        write(2, arg, strlen(arg));
-    write(2, ": ", 2);
-    write(2, strerror(errno), strlen(strerror(errno)));
-    write(2, "\n", 1);
+	write(2, "minishell: cd: ", 15);
+	if (arg)
+		write(2, arg, strlen(arg));
+	write(2, ": ", 2);
+	write(2, strerror(errno), strlen(strerror(errno)));
+	write(2, "\n", 1);
 }
 
-int ft_cd(char **args, char ***envp)
+int	ft_cd(char **args, char ***envp)
 {
-    char *oldpwd;
-    char *target;
+	char	*oldpwd;
+	char	*target;
 
-    oldpwd = getcwd(NULL, 0);
-    if (!oldpwd)
-    {
-        cd_error(NULL);   // unlikely, but safe
-        return 1;
-    }
-
-    target = cd_get_target(args, *envp);
-    if (!target)
-    {
-        free(oldpwd);
-        return 1;
-    }
-
-    if (chdir(target) != 0)
-    {
-        cd_error(target);
-        free(oldpwd);
-        return 1;
-    }
-
-    update_env(envp, oldpwd);
-    free(oldpwd);
-    return 0;
+	oldpwd = getcwd(NULL, 0);
+	if (!oldpwd)
+	{
+		cd_error(NULL); // unlikely, but safe
+		return (1);
+	}
+	target = cd_get_target(args, *envp);
+	if (!target)
+	{
+		free(oldpwd);
+		return (1);
+	}
+	if (chdir(target) != 0)
+	{
+		cd_error(target);
+		free(oldpwd);
+		return (1);
+	}
+	update_env(envp, oldpwd);
+	free(oldpwd);
+	return (0);
 }

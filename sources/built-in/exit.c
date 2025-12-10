@@ -12,25 +12,25 @@
 
 #include "minishell.h"
 
-int ft_exit(char **argv)
+int	ft_exit(char **argv)
 {
-    int status;
+	int	status;
 
-    ft_putstr_fd("exit\n", 1);
-    if (!argv[1])
-        exit(0);
-    if (!is_numeric(argv[1]))
-    {
-        ft_putstr_fd("minishell: exit: ", 2);
-        ft_putstr_fd(argv[1], 2);
-        ft_putstr_fd(": numeric argument required\n", 2);
-        exit(255);
-    }
-    if (argv[2])
-    {
-        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-        return 1;
-    }
-    status = ft_atoi(argv[1]) % 256;
-    exit(status);
+	ft_putstr_fd("exit\n", 1);
+	if (!argv[1])
+		exit(0);
+	if (!is_numeric(argv[1]))
+	{
+		ft_putstr_fd("minishell: exit: ", 2);
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
+		exit(255);
+	}
+	if (argv[2])
+	{
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		return (1);
+	}
+	status = ft_atoi(argv[1]) % 256;
+	exit(status);
 }

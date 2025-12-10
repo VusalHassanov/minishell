@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 16:32:51 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/10 17:21:07 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ static int	ft_delimiter_is_quoted(char *delimiter)
 
 int	ft_heredoc(char *delimiter, t_shell *system)
 {
-	int		pipe_fd[2] = {0};
+	int		pipe_fd[2] = {
+		0};
 	char	*line;
 	int		expansion;
-	char 	*result;
+	char	*result;
 
 	expansion = ft_delimiter_is_quoted(delimiter);
 	pipe(pipe_fd);
@@ -36,6 +37,9 @@ int	ft_heredoc(char *delimiter, t_shell *system)
 	while (1)
 	{
 		line = readline(">");
+		if (!line)
+		{
+		}
 		if (!line || !ft_strcmp(line, delimiter))
 			break ;
 		if (expansion == TRUE)
