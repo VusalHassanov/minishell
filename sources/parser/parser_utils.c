@@ -28,7 +28,8 @@ int	is_double_operator(int prev_type, int current_type)
 
 int	check_token_syntax(t_token *head)
 {
-	int prev_type;
+	int	prev_type;
+
 	prev_type = TOKEN_NONE;
 	if (head->type == TOKEN_PIPE)
 	{

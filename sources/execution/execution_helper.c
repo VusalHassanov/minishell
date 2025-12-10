@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_helper.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 19:18:16 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/09 21:44:00 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 16:25:06 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ int	is_builtin(char *command)
 	while (builtin[i])
 	{
 		if (!ft_strcmp(builtin[i], command))
-			return (1);
+			return (TRUE);
 		i++;
 	}
-	return (0);
+	return (FALSE);
 }
 
 int	ft_reset_fds(int *fd)

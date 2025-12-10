@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/09 21:19:53 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 16:12:53 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,27 +108,3 @@ char *expand_variable(char *str, int *i, t_shell *system)
     *i = 0;
     return (result);
 }
-
-// void	filter_quotes(t_token *token)
-// {
-// }
-
-// void	expand_token_string(t_token *token)
-// {
-// }
-
-// void	expand_and_filter_tokens(t_token *head)
-// {
-// 	t_token	*current;
-
-// 	current = head;
-// 	while (current)
-// 	{
-// 		if (current->type == TOKEN_WORD)
-// 		{
-// 			expand_token_string(current);
-// 			filter_quotes(current);
-// 		}
-// 		current = current->next;
-// 	}
-// }

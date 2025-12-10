@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/09 21:18:55 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 16:24:37 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void	clean_system(t_shell *system)
 		free(system);
 }
 
-// print_nodes(system->token_list);
-// print_ast(system->ast_root, 0, 0);
 int	input_processing(t_shell *system, char *input)
 {
 	if (parse_from_string(input, system) == ERROR)
@@ -44,17 +42,7 @@ int	input_processing(t_shell *system, char *input)
 	system->ast_root = NULL;
 	return (SUCCESS);
 }
-// readline stdin
-// check signals received (signal status)
-// if readline = true  add history
-// system->token_list = create_token_list(input)
-// syntax checker
-// system->ast = create_ast(system->token_list, NULL)
-// free token_list if ast is properly done
-// execute_ast (system->ast, 0);
-// free (AST)
-// free input
-// return (system->exit_status);
+
 int	input_handler(t_shell *system)
 {
 	char	*input;
@@ -81,8 +69,6 @@ int	input_handler(t_shell *system)
 	return (system->exit_status);
 }
 
-// should minishell quit if environment variable is failed to init?
-// setup history pointer (not needed?)
 t_shell	*init_system(char **envp)
 {
 	t_shell	*system;
@@ -101,10 +87,6 @@ t_shell	*init_system(char **envp)
 	return (system);
 }
 
-// free split envp
-// cleanup history
-// return (system->exit_status);
-// exit status as single variable since its not possible to reach after system free
 int	main(int argc, char *argv[] __attribute__((unused)), char *envp[])
 {
 	t_shell	*system;

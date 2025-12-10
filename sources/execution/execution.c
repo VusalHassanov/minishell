@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/09 21:46:24 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/10 15:44:43 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	set_up_redirections(t_ast *node, char **envp)
+int	set_up_redirections(t_ast *node, t_shell *system)
 {
 	int		i;
 	t_redir	**current;
@@ -32,86 +32,71 @@ int	set_up_redirections(t_ast *node, char **envp)
 		else if (current[i]->type == TOKEN_REDIR_OUT)
 			ft_redir_out(current[i]->target);
 		else if (current[i]->type == TOKEN_HEREDOC)
-			ft_heredoc(current[i]->target, envp);
+			ft_heredoc(current[i]->target, system);
 		i++;
 	}
 	return (1);
 }
 
-// int	execution_handler(t_ast *node, t_shell *system)
-// {
-// 	int		fd[2];
-// 	char	*buffer;
-
-// 	fd[0] = dup(STDIN_FILENO);
-// 	fd[1] = dup(STDOUT_FILENO);
-// 	if (!set_up_redirections(node, system->envp))
-// 	{
-// 		dup2(fd[0], STDIN_FILENO);
-// 		close(fd[0]);
-// 		dup2(fd[1], STDOUT_FILENO);
-// 		close(fd[1]);
-// 		return (0);
-// 	}
-// 	handle_expansion(node->argv, system);
-// 	if (is_builtin(node->argv[0]))
-// 	{
-// 		system->exit_status = execute_builtin(node->argv, &(system->envp));
-// 	}
-// 	else
-// 	{
-// 		system->exit_status = execute_external(node, system);
-// 	}
-// 	dup2(fd[0], STDIN_FILENO);
-// 	close(fd[0]);
-// 	dup2(fd[1], STDOUT_FILENO);
-// 	close(fd[1]);
-// 	return (1);
-// }
-
 int	execution_handler(t_ast *node, t_shell *system)
 {
 	int	fd[2];
+	int status;
+	pid_t pid;
 
 	handle_expansion(node->argv, system);
 	if (is_builtin(node->argv[0]))
 	{
-		if (system->is_child == 1)
-		{
-			set_up_redirections(node, system->envp);
-			system->exit_status = execute_builtin(node->argv, &(system->envp));
-		}
-		else
-		{
+		if (system->is_child == 0)
 			ft_backup_fds(fd);
-			set_up_redirections(node, system->envp);
-			system->exit_status = execute_builtin(node->argv, &(system->envp));
+		set_up_redirections(node, system);
+		system->exit_status = execute_builtin(node->argv, &(system->envp));
+		if(system->is_child == 0)
 			ft_reset_fds(fd);
 		}
-	}
 	else
-	{
-		system->exit_status = execute_external(node, system);
-	}
-	return (1);
+		execute_external(node, system);
+	return (FAILURE);
 }
-
-// int		fd[2];
-// fd[0] = dup(STDIN_FILENO);
-// fd[1] = dup(STDOUT_FILENO);
-// if (!set_up_redirections(node, system->envp))
+// int	execution_handler(t_ast *node, t_shell *system)
 // {
-// 	dup2(fd[0], STDIN_FILENO);
-// 	close(fd[0]);
-// 	dup2(fd[1], STDOUT_FILENO);
-// 	close(fd[1]);
-// 	return (0);
-// }
+// 	int	fd[2];
+// 	int status;
+// 	pid_t pid;
 
-// 	dup2(fd[0], STDIN_FILENO);
-// close(fd[0]);
-// dup2(fd[1], STDOUT_FILENO);
-// close(fd[1]);
+// 	handle_expansion(node->argv, system);
+// 	if (is_builtin(node->argv[0]))
+// 	{
+// 		if (system->is_child == 0)
+// 			ft_backup_fds(fd);
+// 		set_up_redirections(node, system);
+// 		system->exit_status = execute_builtin(node->argv, &(system->envp));
+// 		if(system->is_child == 0)
+// 			ft_reset_fds(fd);
+// 		}
+// 	else
+// 	{
+// 		if (system->is_child == 1)
+// 		{
+// 			system->exit_status = execute_external(node, system);
+// 		}
+// 		else
+// 			pid = fork();
+// 			if (pid < 0)
+// 			{
+// 			perror("minishell: fork: ");
+// 			return (FAILURE);
+// 			}
+// 			if (pid == 0)
+// 			{
+// 				setup_child_signals();
+// 				system->exit_status = execute_external(node, system);
+// 			}
+// 			else
+// 				wait(&status);
+// 	}
+// 	return (FAILURE);
+// }
 
 void	execute_ast(t_ast *node, t_shell *system)
 {
@@ -125,9 +110,10 @@ void	execute_ast(t_ast *node, t_shell *system)
 	}
 	else
 	{
-		if (!execution_handler(node, system))
+		if (execution_handler(node, system) == FAILURE)
 		{
 			// printf("oh no! execution handling error!\n");
 		}
 	}
 }
+

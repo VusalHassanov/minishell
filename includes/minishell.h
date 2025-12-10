@@ -23,6 +23,9 @@
 # define ERROR -1
 # define FALSE 0
 # define TRUE 1
+# define LEFT 0
+# define RIGHT 1
+
 
 typedef enum e_token_type
 {
@@ -116,7 +119,7 @@ int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
 int					execute_external(t_ast *node, t_shell *system);
 char				*resolve_path(char **envp, char *cmd);
-int					set_up_redirections(t_ast *node, char **envp);
+int					set_up_redirections(t_ast *node, t_shell *system);
 // int					count_similar_commands(char **envp, char *cmd);
 
 // Execution Helper
@@ -127,7 +130,7 @@ int					ft_backup_fds(int *fd);
 void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
-int					ft_heredoc(char *delimiter, char **envp);
+int					ft_heredoc(char *delimiter, t_shell *system);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
@@ -152,9 +155,11 @@ void				copy_without_var(char *dst, char *src, int pos,
 
 // Signals
 void				handle_sigint(int sig);
+void				handle_heredoc_sigint(int sig);
 int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
+void				setup_heredoc_signals(void);
 
 // built-ins
 int					ft_cd(char **args, char ***envp);
