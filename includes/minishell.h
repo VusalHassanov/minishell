@@ -138,6 +138,10 @@ void 				copy_with_var(char *dst, char *src, char *value, int pos);
 char 				*remove_var(char *str, int pos);
 char 				*replace_var(char *str, int pos, char *value);
 void 				copy_without_var(char *dst, char *src, int pos, int var_len);
+int 				is_in_single_quotes(char *str, int pos);
+char 				*remove_quotes(char *str);
+// int 				is_in_quotes(char *str, int pos);
+// int 				get_len_without_quotes(char *str);
 
 // Signals
 void				handle_sigint(int sig);
