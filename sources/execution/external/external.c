@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/10 16:25:40 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/11 12:01:04 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	execute_external(t_ast *node, t_shell *system)
 		if (pid == 0)
 		{
 			setup_child_signals();
-			if (!set_up_redirections(node, system))
+			if (set_up_redirections(node, system) == ERROR)
 				exit(EXIT_FAILURE);
 			execute_child_process(node, system);
 		}
@@ -100,7 +100,7 @@ int	execute_external(t_ast *node, t_shell *system)
 	}
 	else
 	{
-		if (!set_up_redirections(node, system))
+		if (set_up_redirections(node, system) == ERROR)
 			exit(EXIT_FAILURE);
 		execute_child_process(node, system);
 	}

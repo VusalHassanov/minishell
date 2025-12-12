@@ -153,6 +153,7 @@ void				copy_without_var(char *dst, char *src, int pos,
 						int var_len);
 
 // Signals
+extern volatile sig_atomic_t	g_signal;
 void				handle_sigint(int sig);
 void				handle_heredoc_sigint(int sig);
 int					check_signal_received(void);

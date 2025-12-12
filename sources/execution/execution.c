@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 22:04:30 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/11 12:00:19 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,13 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 		else if (current[i]->type == TOKEN_REDIR_OUT)
 			ft_redir_out(current[i]->target);
 		else if (current[i]->type == TOKEN_HEREDOC)
-			ft_heredoc(current[i]->target, system);
+		{
+			if(ft_heredoc(current[i]->target, system) == FAILURE)
+			 return (ERROR);
+		}
 		i++;
 	}
-	return (1);
+	return (SUCCESS);
 }
 
 void	execute_ast(t_ast *node, t_shell *system)
@@ -55,7 +58,8 @@ void	execute_ast(t_ast *node, t_shell *system)
 		{
 			if (system->is_child == 0)
 				ft_backup_fds(fd);
-			set_up_redirections(node, system);
+			if(set_up_redirections(node, system)== ERROR)
+				return ;
 			system->exit_status = execute_builtin(node->argv, &(system->envp));
 			if (system->is_child == 0)
 				ft_reset_fds(fd);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:19:02 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/10 22:12:11 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/11 12:16:32 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static volatile sig_atomic_t	g_signal = 0;
+volatile sig_atomic_t	g_signal = 0;
 
 void	handle_sigint(int sig)
 {
@@ -27,8 +27,9 @@ void	handle_heredoc_sigint(int sig)
 {
 	g_signal = sig;
 	write(STDOUT_FILENO, "\n", 1);
-	rl_done = 1;
+	rl_replace_line("", 0);
 }
+
 
 int	check_signal_received(void)
 {
