@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/11 12:01:04 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/12 11:53:02 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,10 @@ int	execute_external(t_ast *node, t_shell *system)
 				exit(EXIT_FAILURE);
 			execute_child_process(node, system);
 		}
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
+		setup_parent_signals();
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/11 12:17:52 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/12 12:44:30 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,58 +29,108 @@ int	ft_heredoc(char *delimiter, t_shell *system)
 	char	*line;
 	int		expansion;
 	char	*result;
+	pid_t	pid;
+	int		status;
 
-	expansion = ft_delimiter_is_quoted(delimiter);
-	if (pipe(pipe_fd) == -1)
+	pid = fork();
+	if (pid == 0)
 	{
-		perror("pipe");
-		return (ERROR);
-	}
-	setup_heredoc_signals();
-	while (1)
-	{
-		g_signal = 0;
-		line = readline("> ");
-		if (g_signal == SIGINT)
+		expansion = ft_delimiter_is_quoted(delimiter);
+		if (pipe(pipe_fd) == -1)
 		{
-			if (line)
-				free(line);
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
-			setup_parent_signals();
-			system->exit_status = 130;
+			perror("pipe");
 			return (ERROR);
 		}
-		if (!line)
+		setup_heredoc_signals();
+		while (1)
 		{
-			break;
-		}
-		if (!ft_strcmp(line, delimiter))
-		{
-			free(line);
-			break ;
-		}
-		// if (expansion == TRUE)
-		// {
-		// 	result = expand_string(line, system);
-		// 	ft_putendl_fd(result, pipe_fd[1]);
-		// 	free(result);
-		// }
-		// else
+			// g_signal = 0;
+			// rl_done = 0;
+			line = readline("> ");
+			// if (g_signal == SIGINT)
+			// {
+			// 	if (line)
+			// 		free(line);
+			// 	close(pipe_fd[0]);
+			// 	close(pipe_fd[1]);
+			// 	setup_parent_signals();
+			// 	system->exit_status = 130;
+			// 	return (ERROR);
+			// }
+			if (!line)
+			{
+				break ;
+			}
+			if (!ft_strcmp(line, delimiter))
+			{
+				free(line);
+				break ;
+			}
 			ft_putendl_fd(line, pipe_fd[1]);
-		free(line);
-	}
-	setup_parent_signals();
-	close(pipe_fd[1]);
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-	{
+			free(line);
+		}
+		setup_parent_signals();
+		close(pipe_fd[1]);
+		if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+		{
+			close(pipe_fd[0]);
+			perror("dup2");
+			return (ERROR);
+		}
 		close(pipe_fd[0]);
-		perror("dup2");
-		return (ERROR);
+		exit (EXIT_SUCCESS);
 	}
-	close(pipe_fd[0]);
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		waitpid(pid, &status, 0);
+	}
+		
 	return (SUCCESS);
 }
+
+// int	ft_heredoc(char *delimiter, t_shell *system)
+// {
+// 	int		pipe_fd[2];
+// 	char	*line;
+// 	int		expansion;
+// 	char	*result;
+
+// 	expansion = ft_delimiter_is_quoted(delimiter);
+// 	if (pipe(pipe_fd) == -1)
+// 	{
+// 		perror("pipe");
+// 		return (ERROR);
+// 	}
+// 	setup_heredoc_signals();
+// 	while (1)
+// 	{
+// 		g_signal = 0;
+// 		line = readline("> ");
+// 		if (!line)
+// 		{
+// 				break ;
+// 		}
+// 		if (!line || !ft_strcmp(line, delimiter))
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		ft_putendl_fd(line, pipe_fd[1]);
+// 		free(line);
+// 	}
+// 	setup_parent_signals();
+// 	close(pipe_fd[1]);
+// 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+// 	{
+// 		close(pipe_fd[0]);
+// 		perror("dup2");
+// 		return (ERROR);
+// 	}
+// 	close(pipe_fd[0]);
+// 	return (SUCCESS);
+// }
 
 // int	main(void)
 // {
