@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 18:14:16 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 19:48:49 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static int	ft_delimiter_is_quoted(char *delimiter)
 	int	len;
 
 	len = ft_strlen(delimiter);
-	if ((delimiter[0] == '\'' && delimiter[len] == '\'')
-		|| (delimiter[0] == '\"' && delimiter[len] == '\"'))
+	if ((delimiter[0] == '\'' && delimiter[len-1] == '\'')
+		|| (delimiter[0] == '\"' && delimiter[len-1] == '\"'))
 		return (FALSE);
 	return (TRUE);
 }

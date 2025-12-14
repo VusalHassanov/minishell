@@ -150,8 +150,8 @@ char				*expand_exit_status(char *str, int pos, int exit_status);
 void				copy_exit_status(char *dst, char *src, char *exit_str,
 						int pos);
 void				handle_expansion(char **argv, t_shell *system);
-char				*expand_string(char *str, t_shell *system);
-char				*expand_variable(char *str, int *i, t_shell *system);
+char				*expand_string(char *str, t_shell *system, int expand_flag);
+char				*expand_variable(char *str, int *i, t_shell *system, int in_heredoc);
 int					get_var_len(char *str, int pos);
 void				copy_with_var(char *dst, char *src, char *value, int pos);
 char				*remove_var(char *str, int pos);
