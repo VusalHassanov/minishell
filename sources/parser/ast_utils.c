@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 12:26:29 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 21:32:23 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 11:53:18 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	cleanup_ast(t_ast *root)
 	while (root->redir && root->redir[i])
 	{
 		free(root->redir[i]->target);
+		if (root->redir[i]->heredoc_fd > 0)
+			close(root->redir[i]->heredoc_fd);
 		free(root->redir[i]);
 		i++;
 	}

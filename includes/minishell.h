@@ -12,6 +12,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <sys/types.h>
 
 # define QUOTE_NONE 0
 # define QUOTE_OPEN 1
@@ -42,6 +43,8 @@ typedef struct s_redir
 {
 	int				type;
 	char			*target;
+	char 			**content;
+	int				heredoc_fd;
 }					t_redir;
 
 typedef struct s_ast
@@ -129,7 +132,7 @@ int					ft_backup_fds(int *fd);
 void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
-int					ft_heredoc(char *delimiter, t_shell *system);
+int					ft_heredoc(int heredoc_fd, t_shell *system);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);

@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/12 11:58:16 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 12:01:47 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 			ft_redir_out(current[i]->target);
 		else if (current[i]->type == TOKEN_HEREDOC)
 		{
-			if(ft_heredoc(current[i]->target, system) == FAILURE)
+			if(ft_heredoc(current[i]->heredoc_fd, system) == ERROR)
 			 return (ERROR);
 		}
 		i++;

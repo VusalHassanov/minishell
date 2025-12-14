@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:30:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/11 11:47:51 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 13:09:07 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ void	setup_child_signals(void)
 //for heredoc input
 void	setup_heredoc_signals(void)
 {
-	signal(SIGINT, handle_heredoc_sigint);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_heredoc_sigint);
 }

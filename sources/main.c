@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 16:24:37 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 12:34:09 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,16 @@ int	input_handler(t_shell *system)
 
 	while (1)
 	{
+		signal_status = check_signal_received();
+		if (signal_status != 0)
+			system->exit_status = signal_status;
+			
 		input = readline("minishell$ ");
 		if (!input)
 		{
 			printf("exit\n");
 			break ;
 		}
-		signal_status = check_signal_received();
-		if (signal_status != 0)
-			system->exit_status = signal_status;
 		if (*input)
 		{
 			add_history(input);

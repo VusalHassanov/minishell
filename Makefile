@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: martin <martin@student.42.fr>              +#+  +:+       +#+         #
+#    By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/12/10 21:54:58 by martin           ###   ########.fr        #
+#    Updated: 2025/12/14 13:49:54 by mgunter          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiling
 NAME = minishell
 # CC = cc
-CC_FLAGS = -Wall -Wextra -Werror
+CC_FLAGS = -Wall -Wextra -Werror -g -O0
 CC_FLAGS = 
 RL_FLAG = -lreadline
 

@@ -3,14 +3,92 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 21:37:39 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 12:33:09 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*generate_temp_filename(void)
+{
+	static int	counter = 0;
+	char		*counter_str;
+	char		*filename;
+
+	counter_str = ft_itoa(counter++);
+	if (!counter_str)
+		return (NULL);
+	filename = ft_strjoin("/tmp/minishell_heredoc_", counter_str);
+	free(counter_str);
+	return (filename);
+}
+
+int	get_input_heredoc_fd(char *delimitter)
+{
+	char	*line;
+	int		fd;
+	char	*temp_filename;
+	int		read_fd;
+
+	temp_filename = generate_temp_filename();
+	if (!temp_filename)
+		return (-1);
+	fd = open(temp_filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	if (fd == -1)
+	{
+		perror("open");
+		free(temp_filename);
+		return (-1);
+	}
+	g_signal = 0;
+	setup_heredoc_signals();
+	while (1)
+	{
+		line = readline("heredoc>");
+		if (!line || g_signal != 0)
+		{
+			if (!line && g_signal == 0)
+				ft_putendl_fd("Warning: here-document delimited by end of file", 2);
+			if (line)
+			{
+				free(line);
+			}
+			if (g_signal != 0)
+			{
+				close(fd);
+				unlink(temp_filename);
+				setup_parent_signals();
+				free(temp_filename);
+				return (-1);
+			}
+			break ;
+		}
+		if (!ft_strcmp(line, delimitter))
+		{
+			free(line);
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	close(fd);
+	read_fd = open(temp_filename, O_RDONLY, 0600);
+	if (read_fd == -1)
+	{
+		perror("open for reading");
+		unlink(temp_filename);
+		free(temp_filename);
+		return (-1);
+	}
+	unlink(temp_filename);
+	free(temp_filename);
+	setup_parent_signals();
+	return (read_fd);
+}
 
 int	is_redirection_operator(int token_type)
 {
@@ -50,6 +128,15 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection)
 		redirection[count]->target = ft_strdup((*current)->next->value);
 		if (!redirection[count]->target)
 			return (cleanup_redir_error(redirection, redirection[count]));
+		if (redirection[count]->type == TOKEN_HEREDOC)
+		{
+			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target);
+			if (redirection[count]->heredoc_fd == -1)
+			{
+				cleanup_redir_error(redirection, redirection[count]);
+				return NULL;
+			}
+		}
 		count++;
 	}
 	(*current) = (*current)->next->next;
@@ -91,8 +178,8 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 	return (argv);
 }
 
-// token list is already divided, so there wont be any pipe left
-void	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
+// token content is already divided, so there wont be any pipe left
+int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 {
 	while (current && current != end)
 	{
@@ -103,10 +190,15 @@ void	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 		else if (is_redirection_operator(current->type))
 		{
 			ast_node->redir = append_redir(&current, ast_node->redir);
+			if (ast_node->redir == NULL)
+			{
+				return ERROR;
+			}
 		}
 		else
 			current = current->next;
 	}
+	return SUCCESS;
 }
 
 t_ast	*create_ast(t_token *start, t_token *end)
@@ -131,7 +223,8 @@ t_ast	*create_ast(t_token *start, t_token *end)
 	else
 	{
 		node->node_type = TOKEN_COMMAND;
-		assign_ast_node(start, end, node);
+		if(assign_ast_node(start, end, node) == ERROR)
+			return NULL;
 	}
 	return (node);
 }
