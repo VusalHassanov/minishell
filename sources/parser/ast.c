@@ -6,89 +6,12 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 12:33:09 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 16:45:28 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*generate_temp_filename(void)
-{
-	static int	counter = 0;
-	char		*counter_str;
-	char		*filename;
-
-	counter_str = ft_itoa(counter++);
-	if (!counter_str)
-		return (NULL);
-	filename = ft_strjoin("/tmp/minishell_heredoc_", counter_str);
-	free(counter_str);
-	return (filename);
-}
-
-int	get_input_heredoc_fd(char *delimitter)
-{
-	char	*line;
-	int		fd;
-	char	*temp_filename;
-	int		read_fd;
-
-	temp_filename = generate_temp_filename();
-	if (!temp_filename)
-		return (-1);
-	fd = open(temp_filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
-	if (fd == -1)
-	{
-		perror("open");
-		free(temp_filename);
-		return (-1);
-	}
-	g_signal = 0;
-	setup_heredoc_signals();
-	while (1)
-	{
-		line = readline("heredoc>");
-		if (!line || g_signal != 0)
-		{
-			if (!line && g_signal == 0)
-				ft_putendl_fd("Warning: here-document delimited by end of file", 2);
-			if (line)
-			{
-				free(line);
-			}
-			if (g_signal != 0)
-			{
-				close(fd);
-				unlink(temp_filename);
-				setup_parent_signals();
-				free(temp_filename);
-				return (-1);
-			}
-			break ;
-		}
-		if (!ft_strcmp(line, delimitter))
-		{
-			free(line);
-			break ;
-		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
-	close(fd);
-	read_fd = open(temp_filename, O_RDONLY, 0600);
-	if (read_fd == -1)
-	{
-		perror("open for reading");
-		unlink(temp_filename);
-		free(temp_filename);
-		return (-1);
-	}
-	unlink(temp_filename);
-	free(temp_filename);
-	setup_parent_signals();
-	return (read_fd);
-}
 
 int	is_redirection_operator(int token_type)
 {
@@ -106,7 +29,7 @@ static t_redir	**cleanup_redir_error(t_redir **redir, t_redir *new_redir)
 	return (NULL);
 }
 
-static t_redir	**append_redir(t_token **current, t_redir **redirection)
+static t_redir	**append_redir(t_token **current, t_redir **redirection, t_shell *system)
 {
 	t_redir	**temp;
 	int		count;
@@ -130,7 +53,7 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection)
 			return (cleanup_redir_error(redirection, redirection[count]));
 		if (redirection[count]->type == TOKEN_HEREDOC)
 		{
-			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target);
+			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target, system);
 			if (redirection[count]->heredoc_fd == -1)
 			{
 				cleanup_redir_error(redirection, redirection[count]);
@@ -179,7 +102,7 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 }
 
 // token content is already divided, so there wont be any pipe left
-int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
+int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node, t_shell *system)
 {
 	while (current && current != end)
 	{
@@ -189,7 +112,7 @@ int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 		}
 		else if (is_redirection_operator(current->type))
 		{
-			ast_node->redir = append_redir(&current, ast_node->redir);
+			ast_node->redir = append_redir(&current, ast_node->redir, system);
 			if (ast_node->redir == NULL)
 			{
 				return ERROR;
@@ -201,7 +124,7 @@ int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
 	return SUCCESS;
 }
 
-t_ast	*create_ast(t_token *start, t_token *end)
+t_ast	*create_ast(t_token *start, t_token *end, t_shell *system)
 {
 	t_token	*pipe;
 	t_ast	*node;
@@ -217,50 +140,14 @@ t_ast	*create_ast(t_token *start, t_token *end)
 	if (pipe && pipe != end && pipe->type == TOKEN_PIPE)
 	{
 		node->node_type = TOKEN_PIPE;
-		node->left = create_ast(start, pipe);
-		node->right = create_ast(pipe->next, end);
+		node->left = create_ast(start, pipe, system);
+		node->right = create_ast(pipe->next, end, system);
 	}
 	else
 	{
 		node->node_type = TOKEN_COMMAND;
-		if(assign_ast_node(start, end, node) == ERROR)
+		if(assign_ast_node(start, end, node, system) == ERROR)
 			return NULL;
 	}
 	return (node);
 }
-
-// t_ast	*create_ast(t_token *start, t_token *end)
-// {
-// 	t_token	*current;
-// 	t_token	*least_prio;
-// 	t_ast	*new_node;
-
-// 	current = start;
-// 	least_prio = current;
-// 	if (!start || start == end)
-// 		return (NULL);
-// 	new_node = ft_calloc(sizeof(t_ast), 1);
-// 	if (!new_node)
-// 		return (NULL);
-// 	while (current && current != end)
-// 	{
-// 		if (current->type == TOKEN_PIPE)
-// 		{
-// 			least_prio = current;
-// 			break ;
-// 		}
-// 		current = current->next;
-// 	}
-// 	if (least_prio->type == TOKEN_PIPE)
-// 	{
-// 		new_node->node_type = TOKEN_PIPE;
-// 		new_node->left = create_ast(start, least_prio);
-// 		new_node->right = create_ast(least_prio->next, end);
-// 	}
-// 	else
-// 	{
-// 		new_node->node_type = TOKEN_COMMAND;
-// 		assign_ast_node(start, end, new_node);
-// 	}
-// 	return (new_node);
-// }

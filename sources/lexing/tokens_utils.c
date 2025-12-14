@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:24:52 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/14 13:57:11 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 17:52:13 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,37 +49,6 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-
-// MEMORY LEAKS IF STRJOIN FAILS
-static char	*ft_join_three(char *s1, char *s2, char *s3)
-{
-	char	*temp;
-	char	*result;
-
-	temp = ft_strjoin(s1, s2);
-	if (!temp)
-		return (NULL);
-	result = ft_strjoin(temp, s3);
-	free(temp);
-	return (result);
-}
-
-void	handle_dquote_sigint(int sig)
-{
-	g_signal = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-	rl_done = 1;
-}
-
-void setup_dquote_signals(void)
-{
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, handle_dquote_sigint);
-}
-
 char	*dquote_handler(char *token_string, t_parse_flags *status)
 {
 	char	*line;
@@ -98,7 +67,7 @@ char	*dquote_handler(char *token_string, t_parse_flags *status)
 				free(line);
 			break;
 		}
-		new_string = ft_join_three(token_string, "\n", line);
+		new_string = ft_strjoin_three(token_string, "\n", line);
 		free(token_string);
 		free(line);
 		if (!new_string)

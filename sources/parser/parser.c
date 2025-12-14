@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 21:18:53 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 15:26:15 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	parse_from_string(const char *arguments, t_shell *system)
 		system->token_list = NULL;
 		return (ERROR);
 	}
-	system->ast_root = create_ast(system->token_list, NULL);
+	system->ast_root = create_ast(system->token_list, NULL, system);
 	free_tokens(system->token_list);
 	system->token_list = NULL;
 	if (!system->ast_root)

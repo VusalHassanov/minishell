@@ -27,6 +27,7 @@
 # define LEFT 0
 # define RIGHT 1
 
+
 typedef enum e_token_type
 {
 	TOKEN_NONE,
@@ -43,7 +44,6 @@ typedef struct s_redir
 {
 	int				type;
 	char			*target;
-	char 			**content;
 	int				heredoc_fd;
 }					t_redir;
 
@@ -109,7 +109,7 @@ int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
 
 // AST
-t_ast				*create_ast(t_token *start, t_token *end);
+t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
 
 // AST utils
 void				cleanup_ast(t_ast *root);
@@ -133,6 +133,10 @@ void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
 int					ft_heredoc(int heredoc_fd, t_shell *system);
+int					get_input_heredoc_fd(char *delimitter, t_shell *system);
+// int 				heredoc_gsignal_error(int write_fd, int read_fd);
+int heredoc_gsignal_error(char *line, int write_fd, int read_fd);
+char 				*expand_if_needed(char *line, int expand_flag, t_shell *system);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
@@ -165,6 +169,9 @@ int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
 void				setup_heredoc_signals(void);
+
+void 				setup_dquote_signals(void);
+void				handle_dquote_sigint(int sig);
 
 // built-ins
 int					ft_cd(char **args, char ***envp);

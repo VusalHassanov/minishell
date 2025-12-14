@@ -6,13 +6,13 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 12:34:09 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 17:16:39 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	clean_system(t_shell *system)
+static void	clean_system(t_shell *system)
 {
 	if (system->token_list)
 	{
@@ -33,7 +33,7 @@ void	clean_system(t_shell *system)
 		free(system);
 }
 
-int	input_processing(t_shell *system, char *input)
+static int	input_processing(t_shell *system, char *input)
 {
 	if (parse_from_string(input, system) == ERROR)
 		return (ERROR);
@@ -43,7 +43,7 @@ int	input_processing(t_shell *system, char *input)
 	return (SUCCESS);
 }
 
-int	input_handler(t_shell *system)
+static int	input_handler(t_shell *system)
 {
 	char	*input;
 	int		signal_status;
@@ -70,7 +70,7 @@ int	input_handler(t_shell *system)
 	return (system->exit_status);
 }
 
-t_shell	*init_system(char **envp)
+static t_shell	*init_system(char **envp)
 {
 	t_shell	*system;
 
@@ -105,5 +105,5 @@ int	main(int argc, char *argv[] __attribute__((unused)), char *envp[])
 		clean_system(system);
 		return (exit_status);
 	}
-	return (ERROR);
+	return (FAILURE);
 }

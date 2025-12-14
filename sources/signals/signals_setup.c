@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:30:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/14 13:09:07 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 17:37:30 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,10 @@ void	setup_heredoc_signals(void)
 {
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_heredoc_sigint);
+}
+
+void setup_dquote_signals(void)
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_dquote_sigint);
 }

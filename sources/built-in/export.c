@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:50 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/25 18:29:43 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 17:21:48 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	ft_export(char **argv, char ***envp)
 			ft_putstr_fd("export: `", 2);
 			ft_putstr_fd(argv[i], 2);
 			ft_putstr_fd("`: not a valid identifier\n", 2);
+			free(name);
+			return 1;
 		}
 		else if (value != NULL)
 			ft_setenv(envp, name, value);
