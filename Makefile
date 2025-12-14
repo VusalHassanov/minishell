@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+         #
+#    By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/12/07 17:55:10 by vhasanov         ###   ########.fr        #
+#    Updated: 2025/12/14 13:49:54 by mgunter          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiling
 NAME = minishell
-CC = cc
-# CC_FLAGS = -Wall -Wextra -Werror
+# CC = cc
+CC_FLAGS = -Wall -Wextra -Werror -g -O0
 CC_FLAGS = 
 RL_FLAG = -lreadline
 
@@ -33,6 +33,7 @@ EXEC_SRC = $(wildcard sources/execution/*.c) \
 			$(wildcard sources/execution/external/*.c)
 PIPES_SRC = sources/pipes/pipes.c
 REDIRECT_SRC = $(wildcard sources/redirections/*.c)
+EXPAND_SRC = $(wildcard sources/expansion/*.c)
 MAIN_SRC = sources/main.c
 
 # Main Build
@@ -52,6 +53,9 @@ TEST_PARSER_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_PARSER_SRC))
 TEST_BUILTIN_SRC = $(BUILTIN_SRC)
 TEST_BUILTIN_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_BUILTIN_SRC))
 
+# Default target
+all: $(NAME)
+
 # Build libft
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
@@ -64,9 +68,6 @@ $(OBJ_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes -c $< -o $@
-
-# Main target
-all: $(NAME)
 
 # Build main executable
 $(NAME): $(OBJ) $(LIBFT)

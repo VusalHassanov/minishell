@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:16:54 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/13 16:22:49 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:21:47 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//Checks for n flag to remove the new line
+// Checks for n flag to remove the new line
 int	is_n_flag(const char *arg)
 {
 	int	i;

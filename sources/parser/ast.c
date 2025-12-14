@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/11/11 12:14:39 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 16:45:28 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 
 int	is_redirection_operator(int token_type)
 {
@@ -18,8 +19,17 @@ int	is_redirection_operator(int token_type)
 		|| token_type == TOKEN_REDIR_OUT || token_type == TOKEN_HEREDOC);
 }
 
-// append redirections on multiple function calls since 2nd word after red ist again argv
-t_redir	**append_redir(t_token **current, t_token *end, t_redir **redirection)
+static t_redir	**cleanup_redir_error(t_redir **redir, t_redir *new_redir)
+{
+	if (new_redir)
+		free(new_redir);
+	if (redir)
+		ft_free_redirections(redir);
+	ft_putendl_fd("malloc error: ast.c redir", 2);
+	return (NULL);
+}
+
+static t_redir	**append_redir(t_token **current, t_redir **redirection, t_shell *system)
 {
 	t_redir	**temp;
 	int		count;
@@ -32,19 +42,37 @@ t_redir	**append_redir(t_token **current, t_token *end, t_redir **redirection)
 		temp = ft_realloc(redirection, sizeof(t_redir *) * (count + 1),
 				sizeof(t_redir *) * (count + 2));
 		if (!temp)
-		{
-			// implement error handling
-			return (NULL);
-		}
+			return (cleanup_redir_error(redirection, NULL));
 		redirection = temp;
 		redirection[count] = ft_calloc(sizeof(t_redir), 1);
+		if (!redirection[count])
+			return (cleanup_redir_error(redirection, NULL));
 		redirection[count]->type = (*current)->type;
 		redirection[count]->target = ft_strdup((*current)->next->value);
+		if (!redirection[count]->target)
+			return (cleanup_redir_error(redirection, redirection[count]));
+		if (redirection[count]->type == TOKEN_HEREDOC)
+		{
+			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target, system);
+			if (redirection[count]->heredoc_fd == -1)
+			{
+				cleanup_redir_error(redirection, redirection[count]);
+				return NULL;
+			}
+		}
 		count++;
 	}
 	(*current) = (*current)->next->next;
 	redirection[count] = NULL;
 	return (redirection);
+}
+
+static char	**cleanup_argv_error(char **argv)
+{
+	ft_putendl_fd("malloc error: ast.c argv", 2);
+	if (argv)
+		ft_free_split(argv);
+	return (NULL);
 }
 
 char	**append_argument(t_token **current, t_token *end, char **argv)
@@ -61,12 +89,11 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 		temp = ft_realloc(argv, sizeof(char *) * (count + 1), sizeof(char *)
 				* (count + 2));
 		if (!temp)
-		{
-			// add free function if realloc causes an error
-			return (NULL);
-		}
+			return (cleanup_argv_error(argv));
 		argv = temp;
 		argv[count] = ft_strdup((*current)->value);
+		if (!argv[count])
+			return (cleanup_argv_error(argv));
 		count++;
 		*current = (*current)->next;
 	}
@@ -74,58 +101,53 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 	return (argv);
 }
 
-// token list is already divided, so there wont be any pipe left
-void	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node)
+// token content is already divided, so there wont be any pipe left
+int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node, t_shell *system)
 {
 	while (current && current != end)
 	{
 		if (current->type == TOKEN_COMMAND || current->type == TOKEN_WORD)
 		{
-			// takes arguments and append to list
 			ast_node->argv = append_argument(&current, end, ast_node->argv);
 		}
 		else if (is_redirection_operator(current->type))
 		{
-			ast_node->redir = append_redir(&current, end, ast_node->redir);
+			ast_node->redir = append_redir(&current, ast_node->redir, system);
+			if (ast_node->redir == NULL)
+			{
+				return ERROR;
+			}
 		}
 		else
 			current = current->next;
 	}
+	return SUCCESS;
 }
-// after first occurance of pipe the list will get divided by recursive functioncall
-// otherwise all commands will just appear in the same command node
-t_ast	*create_ast(t_token *start, t_token *end)
-{
-	t_token	*current;
-	t_token	*least_prio;
-	t_ast	*new_node;
 
-	current = start;
-	least_prio = current;
+t_ast	*create_ast(t_token *start, t_token *end, t_shell *system)
+{
+	t_token	*pipe;
+	t_ast	*node;
+
 	if (!start || start == end)
 		return (NULL);
-	new_node = ft_calloc(sizeof(t_ast), 1);
-	if (!new_node)
+	node = ft_calloc(sizeof(t_ast), 1);
+	if (!node)
 		return (NULL);
-	while (current && current != end)
+	pipe = start;
+	while (pipe && pipe != end && pipe->type != TOKEN_PIPE)
+		pipe = pipe->next;
+	if (pipe && pipe != end && pipe->type == TOKEN_PIPE)
 	{
-		if (current->type == TOKEN_PIPE)
-		{
-			least_prio = current;
-			break ;
-		}
-		current = current->next;
-	}
-	if (least_prio->type == TOKEN_PIPE)
-	{
-		new_node->node_type = TOKEN_PIPE;
-		new_node->left = create_ast(start, least_prio);
-		new_node->right = create_ast(least_prio->next, end);
+		node->node_type = TOKEN_PIPE;
+		node->left = create_ast(start, pipe, system);
+		node->right = create_ast(pipe->next, end, system);
 	}
 	else
 	{
-		new_node->node_type = TOKEN_COMMAND;
-		assign_ast_node(start, end, new_node);
+		node->node_type = TOKEN_COMMAND;
+		if(assign_ast_node(start, end, node, system) == ERROR)
+			return NULL;
 	}
-	return (new_node);
+	return (node);
 }

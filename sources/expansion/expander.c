@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/11 19:01:38 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/14 14:21:15 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,97 +45,72 @@
 
 // 1) String quoted, not quoted, double quoted handling
 // 2) Iterate through string, No dollar sign, return
-// 3) If there is a dollar sign, but quote follows it return String itself without quotes
+// 3) If there is a dollar sign,
+// but quote follows it return String itself without quotes
 // 4) Check after dollar sign:
 // 	- If quote, return string without quotes
 // 	- If question mark, replace with exit status
 // 	- If digit, ignore dollar sign and digit + outside quotes
-// 	- If valid variable name, replace with env value or empty string if not found
+// 	- If valid variable name,
+// replace with env value or empty string if not found
 // 5) All functions accepting expansion
 
-void handle_expansion(char **argv, t_shell *system)
+void	handle_expansion(char **argv, t_shell *system)
 {
-    int i;
-    char *expanded;
-    
-    i = 0;
-    while (argv[i])
-    {
-        expanded = expand_string(argv[i], system);
-        if (expanded)
-        {
-            free(argv[i]);
-            argv[i] = expanded;
-        }
-        i++;
-    }
+	int		i;
+	char	*expanded;
+
+	i = 0;
+	while (argv[i])
+	{
+		expanded = expand_string(argv[i], system);
+		if (expanded)
+		{
+			free(argv[i]);
+			argv[i] = expanded;
+		}
+		i++;
+	}
 }
 
-char *expand_string(char *str, t_shell *system)
+char	*expand_string(char *str, t_shell *system)
 {
-    char *result;
-    char *final;
-    int i;
-    
-    i = 0;
-    result = ft_strdup(str);
-    if (!result)
-        return (NULL);
-    while (result[i])
-    {
-        // ADD THIS CHECK: Don't expand $ inside single quotes
-        if (result[i] == '$' && !is_in_single_quotes(result, i))
-            result = expand_variable(result, &i, system);
-        else
-            i++;
-    }
-    // ADD THIS: Remove quotes after expansion
-    final = remove_quotes(result);
-    free(result);
-    return (final);
+	char	*result;
+	char	*final;
+	int		i;
+
+	i = 0;
+	result = ft_strdup(str);
+	if (!result)
+		return (NULL);
+	while (result[i])
+	{
+		if (result[i] == '$' && !is_in_single_quotes(result, i))
+			result = expand_variable(result, &i, system);
+		else
+			i++;
+	}
+	final = remove_quotes(result);
+	free(result);
+	return (final);
 }
 
-char *expand_variable(char *str, int *i, t_shell *system)
+char	*expand_variable(char *str, int *i, t_shell *system)
 {
-    char *result;
-    
-    if (str[*i + 1] == '?')
-        result = expand_exit_status(str, *i, system->exit_status);
-    // ADD quotes to this check:
-    else if (str[*i + 1] == '\0' || str[*i + 1] == ' ' || 
-             str[*i + 1] == '\'' || str[*i + 1] == '\"')
-    {
-        (*i)++;
-        return (str);
-    }
-    else
-        result = expand_env_var(str, *i, system->envp);
-    if (result != str)
-        free(str);
-    *i = 0;
-    return (result);
+	char	*result;
+
+	if (str[*i + 1] == '?')
+		result = expand_exit_status(str, *i, system->exit_status);
+	else if (str[*i + 1] == '\0' || str[*i + 1] == ' '
+		|| str[*i + 1] == '\'' || str[*i + 1] == '\"')
+	{
+		(*i)++;
+		return (str);
+	}
+	else
+		result = expand_env_var(str, *i, system->envp);
+	if (result != str)
+		free(str);
+	*i = 0;
+	return (result);
 }
-
-// void	filter_quotes(t_token *token)
-// {
-// }
-
-// void	expand_token_string(t_token *token)
-// {
-// }
-
-// void	expand_and_filter_tokens(t_token *head)
-// {
-// 	t_token	*current;
-
-// 	current = head;
-// 	while (current)
-// 	{
-// 		if (current->type == TOKEN_WORD)
-// 		{
-// 			expand_token_string(current);
-// 			filter_quotes(current);
-// 		}
-// 		current = current->next;
-// 	}
-// }

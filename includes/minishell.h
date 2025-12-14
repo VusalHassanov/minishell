@@ -2,21 +2,31 @@
 # define MINISHELL_H
 
 # include "libft.h"
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <dirent.h>
 # include <errno.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <sys/types.h>
 
 # define QUOTE_NONE 0
 # define QUOTE_OPEN 1
 # define TOKEN_DOUBLE_QUOTE 2
 # define TOKEN_SINGLE_QUOTE 3
+
+# define SUCCESS 0
+# define FAILURE 1
+# define ERROR -1
+# define FALSE 0
+# define TRUE 1
+# define LEFT 0
+# define RIGHT 1
+
 
 typedef enum e_token_type
 {
@@ -34,6 +44,7 @@ typedef struct s_redir
 {
 	int				type;
 	char			*target;
+	int				heredoc_fd;
 }					t_redir;
 
 typedef struct s_ast
@@ -70,16 +81,10 @@ typedef struct s_parse_flags
 }					t_parse_flags;
 
 // Parsing
-
-// t_token				*parse_tokens_from_string(const char *arguments);
 int					parse_from_string(const char *arguments, t_shell *system);
-void				assign_all_token_types(t_token *head);
 
 // Parsing Utils
 int					check_token_syntax(t_token *head);
-
-// AST utils
-void				cleanup_ast(t_ast *root);
 
 // Lexing
 t_token				*create_token_list(const char *arguments);
@@ -95,15 +100,20 @@ int					is_whitespace(char character);
 int					is_no_quote(t_parse_flags *status);
 int					is_open(t_parse_flags *status);
 int					is_closed(char *string, t_parse_flags *status);
+int					is_quote_literal(char character, t_parse_flags *status);
 
 // Token Checker 2
 int					is_quote(char character);
-int					is_quote_literal(char character, t_parse_flags *status);
+// int					is_quote_literal(char character, t_parse_flags *status);
 int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
 
 // AST
-t_ast				*create_ast(t_token *start, t_token *end);
+t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
+
+// AST utils
+void				cleanup_ast(t_ast *root);
+void				ft_free_redirections(t_redir **redir);
 
 // Execution
 void				execute_ast(t_ast *node, t_shell *system);
@@ -111,43 +121,57 @@ int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
 int					execute_external(t_ast *node, t_shell *system);
 char				*resolve_path(char **envp, char *cmd);
+int					set_up_redirections(t_ast *node, t_shell *system);
 // int					count_similar_commands(char **envp, char *cmd);
+
+// Execution Helper
+int					ft_reset_fds(int *fd);
+int					ft_backup_fds(int *fd);
 
 // Pipes
 void				create_pipe(t_ast *node, t_shell *system);
 
 // redirections
-int					ft_heredoc(char *delimiter);
+int					ft_heredoc(int heredoc_fd, t_shell *system);
+int					get_input_heredoc_fd(char *delimitter, t_shell *system);
+// int 				heredoc_gsignal_error(int write_fd, int read_fd);
+int heredoc_gsignal_error(char *line, int write_fd, int read_fd);
+char 				*expand_if_needed(char *line, int expand_flag, t_shell *system);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
-int					set_up_redirections(t_ast *node);
 
 // Expansion
 // void				filter_quotes(char *dest, const char *source,
 // 						int *quote_flag);
-char 				*expand_env_var(char *str, int pos, char **env);
-char 				*extract_var_name(char *str, int start);
-char 				*expand_exit_status(char *str, int pos, int exit_status);
-void 				copy_exit_status(char *dst, char *src, char *exit_str, int pos);
-void 				handle_expansion(char **argv, t_shell *system);
-char 				*expand_string(char *str, t_shell *system);
-char 				*expand_variable(char *str, int *i, t_shell *system);
-int 				get_var_len(char *str, int pos);
-void 				copy_with_var(char *dst, char *src, char *value, int pos);
-char 				*remove_var(char *str, int pos);
-char 				*replace_var(char *str, int pos, char *value);
-void 				copy_without_var(char *dst, char *src, int pos, int var_len);
-int 				is_in_single_quotes(char *str, int pos);
-char 				*remove_quotes(char *str);
-// int 				is_in_quotes(char *str, int pos);
-// int 				get_len_without_quotes(char *str);
+char				*expand_env_var(char *str, int pos, char **env);
+char				*extract_var_name(char *str, int start);
+char				*expand_exit_status(char *str, int pos, int exit_status);
+void				copy_exit_status(char *dst, char *src, char *exit_str,
+						int pos);
+void				handle_expansion(char **argv, t_shell *system);
+char				*expand_string(char *str, t_shell *system);
+char				*expand_variable(char *str, int *i, t_shell *system);
+int					get_var_len(char *str, int pos);
+void				copy_with_var(char *dst, char *src, char *value, int pos);
+char				*remove_var(char *str, int pos);
+char				*replace_var(char *str, int pos, char *value);
+void				copy_without_var(char *dst, char *src, int pos,
+						int var_len);
+int					is_in_single_quotes(char *str, int pos);
+char				*remove_quotes(char *str);
 
 // Signals
+extern volatile sig_atomic_t	g_signal;
 void				handle_sigint(int sig);
+void				handle_heredoc_sigint(int sig);
 int					check_signal_received(void);
 void				setup_parent_signals(void);
 void				setup_child_signals(void);
+void				setup_heredoc_signals(void);
+
+void 				setup_dquote_signals(void);
+void				handle_dquote_sigint(int sig);
 
 // built-ins
 int					ft_cd(char **args, char ***envp);
@@ -187,6 +211,5 @@ void				update_env(char ***envp, char *oldpwd);
 char				**envp_remove(char **envp, const char *name);
 void				bubble_sort_envp(char **envp);
 int					is_valid_name(const char *name);
-
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:24:52 by mgunter           #+#    #+#             */
-/*   Updated: 2025/11/08 18:59:39 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/14 17:52:13 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,28 +51,31 @@ void	free_tokens(t_token *tokens)
 
 char	*dquote_handler(char *token_string, t_parse_flags *status)
 {
-	char *temp;
-	char *temp2;
-	char *line;
+	char	*line;
+	char	*new_string;
 
+	new_string = NULL;
+	setup_dquote_signals();
 	while (is_open(status))
 	{
 		line = readline("dquote> ");
-		temp = ft_strjoin(token_string, "\n");
-		if (!temp)
-			return (NULL);
-		temp2 = ft_strjoin(temp, line);
-		if (!temp2)
+		if (!line || g_signal == SIGINT)
 		{
-			free(temp);
-			return (NULL);
+			free(token_string);
+			token_string = NULL;
+			if(line)
+				free(line);
+			break;
 		}
+		new_string = ft_strjoin_three(token_string, "\n", line);
 		free(token_string);
 		free(line);
-		free(temp);
-		token_string = temp2;
+		if (!new_string)
+			return (NULL);
+		token_string = new_string;
 		if (is_closed(token_string, status))
 			return (token_string);
 	}
+	setup_parent_signals();
 	return (token_string);
 }
