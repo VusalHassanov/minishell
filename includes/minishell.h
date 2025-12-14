@@ -154,6 +154,8 @@ char				*remove_var(char *str, int pos);
 char				*replace_var(char *str, int pos, char *value);
 void				copy_without_var(char *dst, char *src, int pos,
 						int var_len);
+int					is_in_single_quotes(char *str, int pos);
+char				*remove_quotes(char *str);
 
 // Signals
 extern volatile sig_atomic_t	g_signal;

@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/10 17:31:41 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/14 14:21:15 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	handle_expansion(char **argv, t_shell *system)
 char	*expand_string(char *str, t_shell *system)
 {
 	char	*result;
+	char	*final;
 	int		i;
 
 	i = 0;
@@ -84,12 +85,14 @@ char	*expand_string(char *str, t_shell *system)
 		return (NULL);
 	while (result[i])
 	{
-		if (result[i] == '$')
+		if (result[i] == '$' && !is_in_single_quotes(result, i))
 			result = expand_variable(result, &i, system);
 		else
 			i++;
 	}
-	return (result);
+	final = remove_quotes(result);
+	free(result);
+	return (final);
 }
 
 char	*expand_variable(char *str, int *i, t_shell *system)
@@ -98,7 +101,8 @@ char	*expand_variable(char *str, int *i, t_shell *system)
 
 	if (str[*i + 1] == '?')
 		result = expand_exit_status(str, *i, system->exit_status);
-	else if (str[*i + 1] == '\0' || str[*i + 1] == ' ')
+	else if (str[*i + 1] == '\0' || str[*i + 1] == ' '
+		|| str[*i + 1] == '\'' || str[*i + 1] == '\"')
 	{
 		(*i)++;
 		return (str);
