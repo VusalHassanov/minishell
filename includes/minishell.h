@@ -108,7 +108,7 @@ int					is_quote(char character);
 // int					is_quote_literal(char character, t_parse_flags *status);
 int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
-int					is_redirection_operator(t_token_type type);
+int					is_redirection_operator(int token_type);
 
 // AST
 t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
@@ -116,7 +116,7 @@ t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
 // AST utils
 void				cleanup_ast(t_ast *root);
 void				ft_free_redirections(t_redir **redir);
-t_redir				**cleanup_redir_error(t_redir **redirection, char *target);
+t_redir				**cleanup_redir_error(t_redir **redir, t_redir *new_redir);
 char				**cleanup_argv_error(char **argv);
 
 // Execution
