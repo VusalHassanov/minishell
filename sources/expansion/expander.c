@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
 /*   Updated: 2025/12/15 14:06:41 by mgunter          ###   ########.fr       */
