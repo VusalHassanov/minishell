@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 14:21:15 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:06:41 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	handle_expansion(char **argv, t_shell *system)
 	i = 0;
 	while (argv[i])
 	{
-		expanded = expand_string(argv[i], system);
+		expanded = expand_string(argv[i], system, 0);
 		if (expanded)
 		{
 			free(argv[i]);
@@ -73,7 +73,7 @@ void	handle_expansion(char **argv, t_shell *system)
 	}
 }
 
-char	*expand_string(char *str, t_shell *system)
+char	*expand_string(char *str, t_shell *system, int expand_flag)
 {
 	char	*result;
 	char	*final;
@@ -85,24 +85,36 @@ char	*expand_string(char *str, t_shell *system)
 		return (NULL);
 	while (result[i])
 	{
-		if (result[i] == '$' && !is_in_single_quotes(result, i))
-			result = expand_variable(result, &i, system);
+		if (result[i] == '$')
+		{
+			if (expand_flag || !is_in_single_quotes(result, i))
+				result = expand_variable(result, &i, system, expand_flag);
+			else
+				i++;
+		}
 		else
 			i++;
 	}
+	if(expand_flag)
+		return (result);
 	final = remove_quotes(result);
 	free(result);
 	return (final);
 }
 
-char	*expand_variable(char *str, int *i, t_shell *system)
+char	*expand_variable(char *str, int *i, t_shell *system, int in_heredoc)
 {
 	char	*result;
 
 	if (str[*i + 1] == '?')
 		result = expand_exit_status(str, *i, system->exit_status);
-	else if (str[*i + 1] == '\0' || str[*i + 1] == ' '
-		|| str[*i + 1] == '\'' || str[*i + 1] == '\"')
+	else if (str[*i + 1] == '\0' || str[*i + 1] == ' ')
+	{
+		(*i)++;
+		return (str);
+	}
+	// In heredoc, quotes are NOT special - don't skip them
+	else if (!in_heredoc && (str[*i + 1] == '\'' || str[*i + 1] == '\"'))
 	{
 		(*i)++;
 		return (str);

@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 12:00:03 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 13:18:51 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,71 +15,19 @@
 #define WRITE 0
 #define READ 1
 
-static int	ft_delimiter_is_quoted(char *delimiter)
+static int	set_up_heredoc_parsing(int *fd, int *expand_flag, char *delimitter,
+		char **clean_delimitter)
 {
-	int	len;
-
-	len = ft_strlen(delimiter);
-	if ((delimiter[0] == '\'' && delimiter[len] == '\'')
-		|| (delimiter[0] == '\"' && delimiter[len] == '\"'))
-		return (FALSE);
-	return (TRUE);
-}
-
-char	*generate_temp_filename(void)
-{
-	static int	counter = 0;
-	char		*counter_str;
-	char		*filename;
-
-	counter_str = ft_itoa(counter++);
-	if (!counter_str)
-		return (NULL);
-	filename = ft_strjoin("/tmp/minishell_heredoc_", counter_str);
-	free(counter_str);
-	return (filename);
-}
-
-int	generate_temp_file(int *write_fd, int *read_fd)
-{
-	char	*temp_filename;
-
-	temp_filename = generate_temp_filename();
-	if (!temp_filename)
-		return (-1);
-	*write_fd = open(temp_filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
-	if (*write_fd == -1)
-	{
-		perror("open");
-		free(temp_filename);
-		return (-1);
-	}
-	*read_fd = open(temp_filename, O_RDONLY, 0600);
-	if (*read_fd == -1)
-	{
-		perror("open for reading");
-		close(*write_fd);
-		unlink(temp_filename);
-		free(temp_filename);
-		return (-1);
-	}
-	unlink(temp_filename);
-	free(temp_filename);
-	return (0);
-}
-
-int	set_up_heredoc_parsing(int *fd, int *expand_flag, char **delimitter)
-{
-	if (generate_temp_file(&fd[0], &fd[1]) == -1)
+	if (generate_temp_file(&fd[WRITE], &fd[READ]) == -1)
 		return (ERROR);
-	*expand_flag = ft_delimiter_is_quoted(*delimitter);
-	*delimitter = remove_quotes(*delimitter);
+	*expand_flag = ft_delimiter_is_quoted(delimitter);
+	*clean_delimitter = remove_quotes(delimitter);
 	g_signal = 0;
 	setup_heredoc_signals();
 	return (SUCCESS);
 }
 
-int	heredoc_end_of_file(char *line, char *delimitter)
+static int	heredoc_end_of_file(char *line, char *delimitter)
 {
 	if (!line || g_signal != 0)
 	{
@@ -92,36 +40,37 @@ int	heredoc_end_of_file(char *line, char *delimitter)
 	if (!ft_strcmp(line, delimitter))
 	{
 		free(line);
-		return TRUE;
+		return (TRUE);
 	}
 	return (FALSE);
 }
 
-// fd[0] write temp file
-// fd[1] read temp file
 int	get_input_heredoc_fd(char *delimitter, t_shell *system)
 {
 	char	*line;
 	int		fd[2];
 	int		expand_flag;
 	char	*expanded;
+	char	*clean_delimitter;
 
-	if (set_up_heredoc_parsing(fd, &expand_flag, &delimitter) == ERROR)
+	if (set_up_heredoc_parsing(fd, &expand_flag, delimitter,
+			&clean_delimitter) == ERROR)
 		return (ERROR);
 	while (1)
 	{
 		line = readline("heredoc>");
 		if (g_signal != 0)
-			return (heredoc_gsignal_error(line, fd[0], fd[1]));
+			return (heredoc_gsignal_error(line, fd[WRITE], fd[READ]));
 		line = expand_if_needed(line, expand_flag, system);
-		if (heredoc_end_of_file(line, delimitter))
+		if (heredoc_end_of_file(line, clean_delimitter))
 			break ;
-		ft_putendl_fd(line, fd[0]);
+		ft_putendl_fd(line, fd[WRITE]);
 		free(line);
 	}
-	close(fd[0]);
+	free(clean_delimitter);
+	close(fd[WRITE]);
 	setup_parent_signals();
-	return (fd[1]);
+	return (fd[READ]);
 }
 
 int	ft_heredoc(int heredoc_fd, t_shell *system)
