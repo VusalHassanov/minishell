@@ -189,6 +189,7 @@ int					ft_unset(char **argv, char ***envp);
 
 // built-in helper
 char				*cd_get_target(char **argv, char **envp);
+char				*expand_tilde(char *path, char **envp);
 int					is_n_flag(const char *arg);
 int					is_numeric(const char *str);
 
