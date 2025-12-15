@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 17:21:41 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 17:55:17 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,23 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 	return (SUCCESS);
 }
 
+char **find_first_argument(char **argv)
+{
+	int i;
+	i = 0;
+	while (argv && argv[i] && argv[i][0] == '\0')
+	{
+		i++;
+	}
+	return (argv + i);
+}
+
 void	execute_ast(t_ast *node, t_shell *system)
 {
 	int		fd[2];
 	int		status;
 	pid_t	pid;
+	char	**current;
 
 	if (!node)
 		return ;
@@ -59,7 +71,8 @@ void	execute_ast(t_ast *node, t_shell *system)
 	else
 	{
 		handle_expansion(node->argv, system);
-		if (is_builtin(node->argv[0]))
+		current = find_first_argument(node->argv);
+		if (is_builtin(current[0]))
 		{
 			if (system->is_child == 0)
 				ft_backup_fds(fd);
@@ -68,7 +81,7 @@ void	execute_ast(t_ast *node, t_shell *system)
 				system->exit_status = 1;
 				return ;
 			}
-			system->exit_status = execute_builtin(node->argv, &(system->envp));
+			system->exit_status = execute_builtin(current, &(system->envp));
 			if (system->is_child == 0)
 				ft_reset_fds(fd);
 		}
@@ -77,3 +90,37 @@ void	execute_ast(t_ast *node, t_shell *system)
 	}
 	return ;
 }
+
+
+// if argv[i][0] is empty, then it fails to call a function. 
+// void	execute_ast(t_ast *node, t_shell *system)
+// {
+// 	int		fd[2];
+// 	int		status;
+// 	pid_t	pid;
+
+// 	if (!node)
+// 		return ;
+// 	if (node->node_type == TOKEN_PIPE)
+// 		create_pipe(node, system);
+// 	else
+// 	{
+// 		handle_expansion(node->argv, system);
+// 		if (is_builtin(node->argv[0]))
+// 		{
+// 			if (system->is_child == 0)
+// 				ft_backup_fds(fd);
+// 			if (set_up_redirections(node, system) == ERROR)
+// 			{
+// 				system->exit_status = 1;
+// 				return ;
+// 			}
+// 			system->exit_status = execute_builtin(node->argv, &(system->envp));
+// 			if (system->is_child == 0)
+// 				ft_reset_fds(fd);
+// 		}
+// 		else
+// 			system->exit_status = execute_external(node, system);
+// 	}
+// 	return ;
+// }
