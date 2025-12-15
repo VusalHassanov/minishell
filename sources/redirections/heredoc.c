@@ -6,11 +6,14 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:07:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 18:14:16 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 12:00:03 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+#define WRITE 0
+#define READ 1
 
 static int	ft_delimiter_is_quoted(char *delimiter)
 {
