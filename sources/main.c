@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 17:16:39 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 17:14:17 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ static int	input_handler(t_shell *system)
 		signal_status = check_signal_received();
 		if (signal_status != 0)
 			system->exit_status = signal_status;
-			
 		input = readline("minishell$ ");
 		if (!input)
 		{
