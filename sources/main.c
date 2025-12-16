@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 17:14:17 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 15:45:24 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static t_shell	*init_system(char **envp)
 	return (system);
 }
 
-int	main(int argc, char *argv[] __attribute__((unused)), char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	t_shell	*system;
 	int		exit_status;

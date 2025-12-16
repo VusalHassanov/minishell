@@ -24,6 +24,9 @@ static void	assign_token_type(t_token *token, t_token_type prev_type)
 		token->type = TOKEN_HEREDOC;
 	else if (!ft_strcmp(token->value, ">>"))
 		token->type = TOKEN_REDIR_APPEND;
+	else if (prev_type == TOKEN_REDIR_IN || prev_type == TOKEN_REDIR_OUT
+		|| prev_type == TOKEN_HEREDOC || prev_type == TOKEN_REDIR_APPEND)
+		token->type = TOKEN_WORD;
 	else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE)
 		token->type = TOKEN_COMMAND;
 	else

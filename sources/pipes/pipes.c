@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 13:20:35 by martin            #+#    #+#             */
-/*   Updated: 2025/12/12 11:46:11 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 15:47:28 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ static pid_t	ft_fork_and_check(int *pipe_fd)
 	return (pid);
 }
 
-static void	ft_cleanup_pipe(int *pipe_fd, pid_t left, pid_t right)
+static void	ft_cleanup_pipe(int *pipe_fd, pid_t left, pid_t right, t_shell *system)
 {
 	int	status;
+	char temp[8];
+	char *exit_code;
 
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
@@ -36,7 +38,6 @@ static void	ft_cleanup_pipe(int *pipe_fd, pid_t left, pid_t right)
 	signal(SIGQUIT, SIG_IGN);
 	waitpid(left, &status, 0);
 	waitpid(right, &status, 0);
-	setup_parent_signals();
 }
 
 static void	ft_execute_pipe_child(t_ast *node, t_shell *system, int *pipe_fd,
@@ -94,5 +95,5 @@ void	create_pipe(t_ast *node, t_shell *system)
 	}
 	if (right == 0)
 		ft_execute_pipe_child(node, system, pipe_fd, RIGHT);
-	ft_cleanup_pipe(pipe_fd, left, right);
+	ft_cleanup_pipe(pipe_fd, left, right, system);
 }

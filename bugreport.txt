@@ -23,6 +23,8 @@ Feature: expansion in heredoc and before commands calls.
 
 bug: heredoc doesnt interrupt properly with ctrl c. Heredoc should close the pipe if line is NULL and ctrl c is pressed so the buffer will not be printed
 
+BUG: empty string crashs! ""
+
 
 
 

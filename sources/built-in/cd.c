@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:50:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/15 16:50:39 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 14:00:56 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ static void	cd_error(const char *arg)
 {
 	write(2, "minishell: cd: ", 15);
 	if (arg)
-		write(2, arg, strlen(arg));
+		write(2, arg, ft_strlen(arg));
 	write(2, ": ", 2);
-	write(2, strerror(errno), strlen(strerror(errno)));
+	write(2, strerror(errno), ft_strlen(strerror(errno)));
 	write(2, "\n", 1);
 }
 
@@ -56,6 +56,11 @@ int	ft_cd(char **args, char ***envp)
 	char	*target;
 	int		should_free_target;
 
+	if (args[2])
+	{
+		ft_putendl_fd("cd: too many arguments", 2);
+		return 1;
+	}
 	oldpwd = getcwd(NULL, 0);
 	target = cd_get_target(args, *envp);
 	if (!target)

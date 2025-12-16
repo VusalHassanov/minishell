@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 19:09:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 13:48:25 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 17:37:05 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ int	is_operator_token(int token_type)
 
 int	is_double_operator(int prev_type, int current_type)
 {
+	if (prev_type == TOKEN_PIPE && (current_type == TOKEN_REDIR_IN
+			|| current_type == TOKEN_REDIR_OUT
+			|| current_type == TOKEN_REDIR_APPEND
+			|| current_type == TOKEN_HEREDOC))
+		return (FALSE);
 	if (is_operator_token(prev_type) && is_operator_token(current_type))
 		return (TRUE);
 	return (FALSE);

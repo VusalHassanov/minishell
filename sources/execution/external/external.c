@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/15 15:11:56 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 18:30:28 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static void	handle_execve_error(char *cmd, char *cmd_path)
 
 void	execute_child_process(t_ast *node, t_shell *system)
 {
-	char	*cmd_path;
+	char			*cmd_path;
+	struct stat		path_stat;
 
 	if (!node || !node->argv)
 	{
@@ -70,6 +71,12 @@ void	execute_child_process(t_ast *node, t_shell *system)
 	{
 		handle_command_not_found(node->argv[0]);
 		exit(127);
+	}
+	if (stat(cmd_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+	{
+		print_error_msg("minishell: ", node->argv[0], ": is a directory\n");
+		free(cmd_path);
+		exit(126);
 	}
 	execve(cmd_path, node->argv, system->envp);
 	handle_execve_error(node->argv[0], cmd_path);
