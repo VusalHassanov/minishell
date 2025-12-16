@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:50:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 20:01:55 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/16 15:50:24 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +50,26 @@ static int	cd_cleanup(char *oldpwd, char *target, int ret, int free_target)
 }
 
 // Main cd function
-int	ft_cd(char **args, char ***envp)
+int ft_cd(char **args, char ***envp)
 {
-	char	*oldpwd;
-	char	*target;
-	int		should_free_target;
-
-	oldpwd = getcwd(NULL, 0);
-	target = cd_get_target(args, *envp);
-	if (!target)
-		return (cd_cleanup(oldpwd, NULL, 1, 0));
-	should_free_target = (args[1] && args[1][0] == '~' && args[1][1] == '/');
-	if (chdir(target) != 0)
-	{
-		cd_error(target);
-		return (cd_cleanup(oldpwd, target, 1, should_free_target));
-	}
-	update_pwd_env(envp, oldpwd);
-	return (cd_cleanup(oldpwd, target, 0, should_free_target));
+    char    *oldpwd;
+    char    *target;
+    int     should_free_target;
+    if (args[2])
+    {
+        ft_putendl_fd("cd: too many arguments", 2);
+        return 1;
+    }
+    oldpwd = getcwd(NULL, 0);
+    target = cd_get_target(args, *envp);
+    if (!target)
+        return (cd_cleanup(oldpwd, NULL, 1, 0));
+    should_free_target = (args[1] && args[1][0] == '~' && args[1][1] == '/');
+    if (chdir(target) != 0)
+    {
+        cd_error(target);
+        return (cd_cleanup(oldpwd, target, 1, should_free_target));
+    }
+    update_pwd_env(envp, oldpwd);
+    return (cd_cleanup(oldpwd, target, 0, should_free_target));
 }

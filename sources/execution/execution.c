@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/16 20:00:10 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/16 18:52:26 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 	i = 0;
 	while (current[i])
 	{
-		assign_redir(current[i], system);
+		/* ⭐ FIX #12: Check return value of each redirection */
+		if (assign_redir(current[i], system) == ERROR)
+			return (ERROR);
 		i++;
 	}
 	return (SUCCESS);
@@ -70,7 +72,7 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 // 	return (SUCCESS);
 // }
 
-void	execute_ast(t_ast *node, t_shell *system)
+int	execute_ast(t_ast *node, t_shell *system)
 {
 	int		fd[2];
 
@@ -89,8 +91,16 @@ void	execute_ast(t_ast *node, t_shell *system)
 		{
 			if (system->is_child == 0)
 				ft_backup_fds(fd);
+			
+			/* ⭐ FIX #15: Handle redirection errors properly */
 			if (set_up_redirections(node, system) == ERROR)
-				return ;
+			{
+				if (system->is_child == 0)
+					ft_reset_fds(fd);
+				system->exit_status = 1;
+				return (1);
+			}
+			
 			system->exit_status = execute_builtin(node->argv, &(system->envp));
 			if (system->is_child == 0)
 				ft_reset_fds(fd);
@@ -98,6 +108,10 @@ void	execute_ast(t_ast *node, t_shell *system)
 			return (system->exit_status);  // ⭐ FIX #16: Return exit status
 		}
 		else
-			execute_external(node, system);
+		{
+			/* ⭐ FIX #17: Capture and return execute_external's exit status */
+			system->exit_status = execute_external(node, system);
+			return (system->exit_status);
+		}
 	}
 }
