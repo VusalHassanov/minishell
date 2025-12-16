@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/16 19:23:19 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:15:47 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,13 @@ int	set_up_redirections(t_ast *node, t_shell *system)
 	t_redir	**current;
 
 	if (!node || !node->redir)
-		return (1);
+		return (SUCCESS);
 	current = node->redir;
 	i = 0;
 	while (current[i])
 	{
-		if(assign_redir(current[i], system) == ERROR)
+		/* ⭐ FIX #12: Check return value of each redirection */
+		if (assign_redir(current[i], system) == ERROR)
 			return (ERROR);
 		i++;
 	}
@@ -61,17 +62,19 @@ char **find_first_argument(char **argv)
 	return (NULL);
 }
 
-void	execute_ast(t_ast *node, t_shell *system)
+int	execute_ast(t_ast *node, t_shell *system)
 {
 	int		fd[2];
-	int		status;
-	pid_t	pid;
 	char	**current;
-	
+
 	if (!node)
-		return ;
+		return (0);
+	
 	if (node->node_type == TOKEN_PIPE)
+	{
 		create_pipe(node, system);
+		return (system->exit_status);  // ⭐ FIX #14: Return the exit status
+	}
 	else
 	{
 		handle_expansion(node->argv, system);
@@ -79,28 +82,35 @@ void	execute_ast(t_ast *node, t_shell *system)
 		if (!current || !current[0])
 		{
 			system->exit_status = 0;
-			return ;
+			return (0);
 		}
 		if (is_builtin(current[0]))
 		{
 			if (system->is_child == 0)
 				ft_backup_fds(fd);
+			
+			/* ⭐ FIX #15: Handle redirection errors properly */
 			if (set_up_redirections(node, system) == ERROR)
 			{
+				if (system->is_child == 0)
+					ft_reset_fds(fd);
 				system->exit_status = 1;
-				return ;
+				return (1);
 			}
+			
 			system->exit_status = execute_builtin(current, &(system->envp));
 			if (system->is_child == 0)
 				ft_reset_fds(fd);
+			
+			return (system->exit_status);  // ⭐ FIX #16: Return exit status
 		}
 		else
 		{
+			/* ⭐ FIX #17: Capture and return execute_external's exit status */
 			system->exit_status = execute_external(node, system);
+			return (system->exit_status);
 		}
-			
 	}
-	return ;
 }
 
 // if argv[i][0] is empty, then it fails to call a function. 
