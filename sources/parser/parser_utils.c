@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 19:09:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 15:46:53 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 19:20:10 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,23 @@ static int	is_operator_token(int token_type)
 		|| token_type == TOKEN_HEREDOC);
 }
 
-int	is_double_operator(int prev_type, int current_type)
+// int	is_double_operator(int prev_type, int current_type)
+// {
+// 	if (is_operator_token(prev_type) && is_operator_token(current_type))
+// 		return (TRUE);
+// 	return (FALSE);
+// }
+
+int is_double_operator(int prev_type, int current_type)
 {
-	if (is_operator_token(prev_type) && is_operator_token(current_type))
-		return (TRUE);
-	return (FALSE);
+    if (prev_type == TOKEN_PIPE && (current_type == TOKEN_REDIR_IN
+            || current_type == TOKEN_REDIR_OUT
+            || current_type == TOKEN_REDIR_APPEND
+            || current_type == TOKEN_HEREDOC))
+        return (FALSE);
+    if (is_operator_token(prev_type) && is_operator_token(current_type))
+        return (TRUE);
+    return (FALSE);
 }
 
 int	check_token_syntax(t_token *head)

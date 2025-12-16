@@ -3,32 +3,54 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:50:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 15:26:15 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 19:20:17 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	assign_token_type(t_token *token, t_token_type prev_type)
+
+static void assign_token_type(t_token *token, t_token_type prev_type)
 {
-	if (!ft_strcmp(token->value, "|"))
-		token->type = TOKEN_PIPE;
-	else if (!ft_strcmp(token->value, "<"))
-		token->type = TOKEN_REDIR_IN;
-	else if (!ft_strcmp(token->value, ">"))
-		token->type = TOKEN_REDIR_OUT;
-	else if (!ft_strcmp(token->value, "<<"))
-		token->type = TOKEN_HEREDOC;
-	else if (!ft_strcmp(token->value, ">>"))
-		token->type = TOKEN_REDIR_APPEND;
-	else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE)
-		token->type = TOKEN_COMMAND;
-	else
-		token->type = TOKEN_WORD;
+    if (!ft_strcmp(token->value, "|"))
+        token->type = TOKEN_PIPE;
+    else if (!ft_strcmp(token->value, "<"))
+        token->type = TOKEN_REDIR_IN;
+    else if (!ft_strcmp(token->value, ">"))
+        token->type = TOKEN_REDIR_OUT;
+    else if (!ft_strcmp(token->value, "<<"))
+        token->type = TOKEN_HEREDOC;
+    else if (!ft_strcmp(token->value, ">>"))
+        token->type = TOKEN_REDIR_APPEND;
+    else if (prev_type == TOKEN_REDIR_IN || prev_type == TOKEN_REDIR_OUT
+        || prev_type == TOKEN_HEREDOC || prev_type == TOKEN_REDIR_APPEND)
+        token->type = TOKEN_WORD;
+    else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE)
+        token->type = TOKEN_COMMAND;
+    else
+        token->type = TOKEN_WORD;
 }
+
+// static void	assign_token_type(t_token *token, t_token_type prev_type)
+// {
+// 	if (!ft_strcmp(token->value, "|"))
+// 		token->type = TOKEN_PIPE;
+// 	else if (!ft_strcmp(token->value, "<"))
+// 		token->type = TOKEN_REDIR_IN;
+// 	else if (!ft_strcmp(token->value, ">"))
+// 		token->type = TOKEN_REDIR_OUT;
+// 	else if (!ft_strcmp(token->value, "<<"))
+// 		token->type = TOKEN_HEREDOC;
+// 	else if (!ft_strcmp(token->value, ">>"))
+// 		token->type = TOKEN_REDIR_APPEND;
+// 	else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE)
+// 		token->type = TOKEN_COMMAND;
+// 	else
+// 		token->type = TOKEN_WORD;
+// }
 
 static void	assign_all_token_types(t_token *head)
 {

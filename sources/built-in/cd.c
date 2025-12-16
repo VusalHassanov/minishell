@@ -6,7 +6,7 @@
 /*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:50:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/02 18:50:49 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/16 19:19:51 by vhasanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,30 +22,54 @@ static void	cd_error(const char *arg)
 	write(2, "\n", 1);
 }
 
-int	ft_cd(char **args, char ***envp)
+// Helper to update environment after successful cd
+static void	update_pwd_env(char ***envp, char *oldpwd)
 {
-	char	*oldpwd;
-	char	*target;
+	char	*newpwd;
 
-	oldpwd = getcwd(NULL, 0);
-	if (!oldpwd)
+	newpwd = getcwd(NULL, 0);
+	if (oldpwd && newpwd)
 	{
-		cd_error(NULL); // unlikely, but safe
-		return (1);
+		ft_setenv(envp, "OLDPWD", oldpwd);
+		ft_setenv(envp, "PWD", newpwd);
 	}
-	target = cd_get_target(args, *envp);
-	if (!target)
-	{
+	else if (newpwd)
+		ft_setenv(envp, "PWD", newpwd);
+	if (newpwd)
+		free(newpwd);
+}
+
+// Helper for cleanup and return
+static int	cd_cleanup(char *oldpwd, char *target, int ret, int free_target)
+{
+	if (oldpwd)
 		free(oldpwd);
-		return (1);
-	}
-	if (chdir(target) != 0)
-	{
-		cd_error(target);
-		free(oldpwd);
-		return (1);
-	}
-	update_env(envp, oldpwd);
-	free(oldpwd);
-	return (0);
+	if (free_target && target)
+		free(target);
+	return (ret);
+}
+
+// Main cd function
+int ft_cd(char **args, char ***envp)
+{
+    char    *oldpwd;
+    char    *target;
+    int     should_free_target;
+    if (args[2])
+    {
+        ft_putendl_fd("cd: too many arguments", 2);
+        return 1;
+    }
+    oldpwd = getcwd(NULL, 0);
+    target = cd_get_target(args, *envp);
+    if (!target)
+        return (cd_cleanup(oldpwd, NULL, 1, 0));
+    should_free_target = (args[1] && args[1][0] == '~' && args[1][1] == '/');
+    if (chdir(target) != 0)
+    {
+        cd_error(target);
+        return (cd_cleanup(oldpwd, target, 1, should_free_target));
+    }
+    update_pwd_env(envp, oldpwd);
+    return (cd_cleanup(oldpwd, target, 0, should_free_target));
 }

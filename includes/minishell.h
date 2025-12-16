@@ -13,6 +13,8 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <sys/types.h>
+#include <sys/stat.h>
+
 
 # define QUOTE_NONE 0
 # define QUOTE_OPEN 1
@@ -116,7 +118,7 @@ void				cleanup_ast(t_ast *root);
 void				ft_free_redirections(t_redir **redir);
 
 // Execution
-void				execute_ast(t_ast *node, t_shell *system);
+int				execute_ast(t_ast *node, t_shell *system);
 int					is_builtin(char *command);
 int					execute_builtin(char **argv, char ***envp);
 int					execute_external(t_ast *node, t_shell *system);
