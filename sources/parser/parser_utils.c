@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 19:09:04 by martin            #+#    #+#             */
-/*   Updated: 2025/12/16 17:37:05 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 19:18:24 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	check_token_syntax(t_token *head)
 	prev_type = TOKEN_NONE;
 	if (head->type == TOKEN_PIPE)
 	{
-		ft_putendl_fd("Error: invalid syntax", 2);
+		// ft_putendl_fd("Error: invalid syntax", 2);
 		return (ERROR);
 	}
 	while (head)
@@ -46,7 +46,7 @@ int	check_token_syntax(t_token *head)
 		if (is_double_operator(prev_type, head->type)
 			|| (is_operator_token(head->type) && !head->next))
 		{
-			ft_putendl_fd("Error: invalid syntax", 2);
+			// ft_putendl_fd("Error: invalid syntax", 2);
 			return (ERROR);
 		}
 		prev_type = head->type;

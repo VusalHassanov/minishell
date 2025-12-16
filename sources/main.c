@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/16 15:45:24 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 19:37:33 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static int	input_processing(t_shell *system, char *input)
 static int	input_handler(t_shell *system)
 {
 	char	*input;
+	char	*line;
 	int		signal_status;
 
 	while (1)
@@ -53,15 +54,26 @@ static int	input_handler(t_shell *system)
 		signal_status = check_signal_received();
 		if (signal_status != 0)
 			system->exit_status = signal_status;
-		input = readline("minishell$ ");
+		if (isatty(fileno(stdin)))
+			input = readline("minishell$ ");
+		else
+		{
+			line = get_next_line(fileno(stdin));
+			if (!line)
+				break ;
+			input = ft_strtrim(line, "\n");
+			free(line);
+		}
 		if (!input)
 		{
-			printf("exit\n");
+			if (isatty(fileno(stdin)))
+				printf("exit\n");
 			break ;
 		}
 		if (*input)
 		{
-			add_history(input);
+			if (isatty(fileno(stdin)))
+				add_history(input);
 			input_processing(system, input);
 		}
 		free(input);
@@ -80,7 +92,7 @@ static t_shell	*init_system(char **envp)
 	if (!system->envp)
 	{
 		free(system);
-		ft_putstr_fd("minishell: failed to initialize environment\n", 2);
+		// ft_putstr_fd("minishell: failed to initialize environment\n", 2);
 		return (NULL);
 	}
 	setup_parent_signals();
