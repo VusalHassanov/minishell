@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:24:52 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/14 17:52:13 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 12:24:03 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,23 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
+int	dquote_end_of_file(char *line, char **token_string)
+{
+	if (!line || g_signal == SIGINT)
+	{
+		if (*token_string)
+		{
+			free(*token_string);
+			*token_string = NULL;
+		}
+		if (line)
+			free(line);
+		return (TRUE);
+	}
+	else
+		return (FALSE);
+}
+
 char	*dquote_handler(char *token_string, t_parse_flags *status)
 {
 	char	*line;
@@ -59,14 +76,8 @@ char	*dquote_handler(char *token_string, t_parse_flags *status)
 	while (is_open(status))
 	{
 		line = readline("dquote> ");
-		if (!line || g_signal == SIGINT)
-		{
-			free(token_string);
-			token_string = NULL;
-			if(line)
-				free(line);
-			break;
-		}
+		if (dquote_end_of_file(line, &token_string) == TRUE)
+			break ;
 		new_string = ft_strjoin_three(token_string, "\n", line);
 		free(token_string);
 		free(line);

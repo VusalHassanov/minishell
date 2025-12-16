@@ -96,6 +96,7 @@ void				skip_whitespace(const char **string);
 void				free_tokens(t_token *tokens);
 void				assign_status(char character, t_parse_flags *status);
 char				*dquote_handler(char *token_string, t_parse_flags *status);
+char				*get_token_string(const char *arguments, t_parse_flags *status);
 
 // Token Checker 1
 int					is_whitespace(char character);
@@ -109,6 +110,7 @@ int					is_quote(char character);
 // int					is_quote_literal(char character, t_parse_flags *status);
 int					is_quote_matching(char character, t_parse_flags *status);
 int					is_shell_operator(char character);
+int					is_redirection_operator(int token_type);
 
 // AST
 t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
@@ -116,6 +118,8 @@ t_ast			*create_ast(t_token *start, t_token *end, t_shell *system);
 // AST utils
 void				cleanup_ast(t_ast *root);
 void				ft_free_redirections(t_redir **redir);
+t_redir				**cleanup_redir_error(t_redir **redir, t_redir *new_redir);
+char				**cleanup_argv_error(char **argv);
 
 // Execution
 int				execute_ast(t_ast *node, t_shell *system);
@@ -136,9 +140,10 @@ void				create_pipe(t_ast *node, t_shell *system);
 // redirections
 int					ft_heredoc(int heredoc_fd, t_shell *system);
 int					get_input_heredoc_fd(char *delimitter, t_shell *system);
-// int 				heredoc_gsignal_error(int write_fd, int read_fd);
-int heredoc_gsignal_error(char *line, int write_fd, int read_fd);
-char 				*expand_if_needed(char *line, int expand_flag, t_shell *system);
+int					heredoc_gsignal_error(char *line, int write_fd, int read_fd);
+char				*expand_if_needed(char *line, int expand_flag, t_shell *system);
+int					ft_delimiter_is_quoted(char *delimiter);
+int					generate_temp_file(int *write_fd, int *read_fd);
 int					ft_redir_append(char *target);
 int					ft_redir_out(char *target);
 int					ft_redir_in(char *target);
@@ -186,6 +191,7 @@ int					ft_unset(char **argv, char ***envp);
 
 // built-in helper
 char				*cd_get_target(char **argv, char **envp);
+char				*expand_tilde(char *path, char **envp);
 int					is_n_flag(const char *arg);
 int					is_numeric(const char *str);
 

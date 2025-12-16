@@ -3,46 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   redir_append.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 13:19:02 by martin            #+#    #+#             */
-/*   Updated: 2025/11/25 19:06:34 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/15 15:12:24 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
 int	ft_redir_append(char *target)
 {
 	int	fd;
+	char *clean_target;
 
-	fd = open(target, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	clean_target = remove_quotes(target);
+	if (!clean_target)
+		return (ERROR);
+	fd = open(clean_target, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 	{
-		perror(target);
+		free(clean_target);
+		perror("open");
 		return (ERROR);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
+		free(clean_target);
 		perror("dup2");
 		close(fd);
 		return (ERROR);
 	}
+	free(clean_target);
 	close(fd);
 	return (SUCCESS);
 }
 
-// int	main(int argc, char *argv[])
+// int	ft_redir_append(char *target)
 // {
-// 	int fd_stdin;
-// 	int fd_stdout;
+// 	int	fd;
 
-// 	fd_stdin = dup(STDIN_FILENO);
-// 	fd_stdout = dup(STDOUT_FILENO);
-// 	ft_redir_append("text.txt");
-// 	write(1, "Hello World\n", strlen("Hello World\n"));
-
-// 	dup2(fd_stdin, STDIN_FILENO);
-// 	dup2(fd_stdout, STDOUT_FILENO);
-// 	return (0);
+// 	fd = open(target, O_WRONLY | O_APPEND | O_CREAT, 0644);
+// 	if (fd == -1)
+// 	{
+// 		perror(target);
+// 		return (ERROR);
+// 	}
+// 	if (dup2(fd, STDOUT_FILENO) == -1)
+// 	{
+// 		perror("dup2");
+// 		close(fd);
+// 		return (ERROR);
+// 	}
+// 	close(fd);
+// 	return (SUCCESS);
 // }

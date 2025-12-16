@@ -6,30 +6,43 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/14 16:45:28 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/15 13:57:09 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-int	is_redirection_operator(int token_type)
+static t_redir	*fill_redirection_node(t_shell *system, t_redir **head,
+		t_token_type type, char *value)
 {
-	return (token_type == TOKEN_REDIR_IN || token_type == TOKEN_REDIR_APPEND
-		|| token_type == TOKEN_REDIR_OUT || token_type == TOKEN_HEREDOC);
+	t_redir	*redirection;
+
+	redirection = ft_calloc(sizeof(t_redir), 1);
+	if (!redirection)
+		return (NULL);
+	redirection->type = type;
+	redirection->target = ft_strdup(value);
+	if (!redirection->target)
+	{
+		free(redirection);
+		return (NULL);
+	}
+	if (redirection->type == TOKEN_HEREDOC)
+	{
+		redirection->heredoc_fd = get_input_heredoc_fd(redirection->target,
+				system);
+		if (redirection->heredoc_fd == -1)
+		{
+			free(redirection->target);
+			free(redirection);
+			return (NULL);
+		}
+	}
+	return (redirection);
 }
 
-static t_redir	**cleanup_redir_error(t_redir **redir, t_redir *new_redir)
-{
-	if (new_redir)
-		free(new_redir);
-	if (redir)
-		ft_free_redirections(redir);
-	ft_putendl_fd("malloc error: ast.c redir", 2);
-	return (NULL);
-}
-
-static t_redir	**append_redir(t_token **current, t_redir **redirection, t_shell *system)
+static t_redir	**append_redir(t_token **current, t_redir **redirection,
+		t_shell *system)
 {
 	t_redir	**temp;
 	int		count;
@@ -44,22 +57,10 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection, t_shell 
 		if (!temp)
 			return (cleanup_redir_error(redirection, NULL));
 		redirection = temp;
-		redirection[count] = ft_calloc(sizeof(t_redir), 1);
+		redirection[count] = fill_redirection_node(system, redirection,
+				(*current)->type, (*current)->next->value);
 		if (!redirection[count])
 			return (cleanup_redir_error(redirection, NULL));
-		redirection[count]->type = (*current)->type;
-		redirection[count]->target = ft_strdup((*current)->next->value);
-		if (!redirection[count]->target)
-			return (cleanup_redir_error(redirection, redirection[count]));
-		if (redirection[count]->type == TOKEN_HEREDOC)
-		{
-			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target, system);
-			if (redirection[count]->heredoc_fd == -1)
-			{
-				cleanup_redir_error(redirection, redirection[count]);
-				return NULL;
-			}
-		}
 		count++;
 	}
 	(*current) = (*current)->next->next;
@@ -67,15 +68,7 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection, t_shell 
 	return (redirection);
 }
 
-static char	**cleanup_argv_error(char **argv)
-{
-	ft_putendl_fd("malloc error: ast.c argv", 2);
-	if (argv)
-		ft_free_split(argv);
-	return (NULL);
-}
-
-char	**append_argument(t_token **current, t_token *end, char **argv)
+static char	**append_argument(t_token **current, t_token *end, char **argv)
 {
 	int		count;
 	char	**temp;
@@ -102,7 +95,8 @@ char	**append_argument(t_token **current, t_token *end, char **argv)
 }
 
 // token content is already divided, so there wont be any pipe left
-int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node, t_shell *system)
+static int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node,
+		t_shell *system)
 {
 	while (current && current != end)
 	{
@@ -115,13 +109,13 @@ int	assign_ast_node(t_token *current, t_token *end, t_ast *ast_node, t_shell *sy
 			ast_node->redir = append_redir(&current, ast_node->redir, system);
 			if (ast_node->redir == NULL)
 			{
-				return ERROR;
+				return (ERROR);
 			}
 		}
 		else
 			current = current->next;
 	}
-	return SUCCESS;
+	return (SUCCESS);
 }
 
 t_ast	*create_ast(t_token *start, t_token *end, t_shell *system)
@@ -146,8 +140,45 @@ t_ast	*create_ast(t_token *start, t_token *end, t_shell *system)
 	else
 	{
 		node->node_type = TOKEN_COMMAND;
-		if(assign_ast_node(start, end, node, system) == ERROR)
-			return NULL;
+		if (assign_ast_node(start, end, node, system) == ERROR)
+			return (NULL);
 	}
 	return (node);
 }
+
+// static t_redir	**append_redir(t_token **current, t_redir **redirection,
+// 		t_shell *system)
+// {
+// 	t_redir **temp;
+// 	int count;
+
+// 	count = 0;
+// 	while (redirection && redirection[count])
+// 		count++;
+// 	if ((*current)->next->type == TOKEN_WORD)
+// 	{
+// 		temp = ft_realloc(redirection, sizeof(t_redir *) * (count + 1),
+// 				sizeof(t_redir *) * (count + 2));
+// 		if (!temp)
+// 			return (cleanup_redir_error(redirection, NULL));
+// 		redirection = temp;
+// 		redirection[count] = ft_calloc(sizeof(t_redir), 1);
+// 		if (!redirection[count])
+// 			return (cleanup_redir_error(redirection, NULL));
+// 		redirection[count]->type = (*current)->type;
+// 		redirection[count]->target = ft_strdup((*current)->next->value);
+// 		if (!redirection[count]->target)
+// 			return (cleanup_redir_error(redirection, redirection[count]));
+// 		if (redirection[count]->type == TOKEN_HEREDOC)
+// 		{
+// 			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target,
+// 					system);
+// 			if (redirection[count]->heredoc_fd == -1)
+// 				return (cleanup_redir_error(redirection, redirection[count]));
+// 		}
+// 		count++;
+// 	}
+// 	(*current) = (*current)->next->next;
+// 	redirection[count] = NULL;
+// 	return (redirection);
+// }
