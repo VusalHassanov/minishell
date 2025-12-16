@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 20:14:10 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:24:57 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,13 @@ void    execute_child_process(t_ast *node, t_shell *system)
     if (stat(cmd_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
     {
         print_error_msg("minishell: ", node->argv[0], ": is a directory\n");
+        free(cmd_path);
+        exit(126);
+    }
+    if (access(cmd_path, X_OK) != 0)
+    {
+        print_error_msg("minishell: ", node->argv[0], ": ");
+        perror(NULL);
         free(cmd_path);
         exit(126);
     }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:21 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/25 14:46:26 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/16 20:33:07 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,14 @@ int	ft_echo(char **argv)
 	{
 		write(STDOUT_FILENO, argv[i], ft_strlen(argv[i]));
 		if (argv[i + 1])
+		{
 			write(STDOUT_FILENO, " ", 1);
+		}
 		i++;
 	}
 	if (newline)
+	{
 		write(STDOUT_FILENO, "\n", 1);
+	}
 	return (0);
 }

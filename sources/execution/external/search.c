@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   search.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:43:48 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 17:37:53 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/16 20:25:53 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*search_paths(char **paths, char *cmd)
 		full = build_full_path(paths[i], cmd);
 		if (!full)
 			return (NULL);
-		if (access(full, X_OK) == 0)
+		if (access(full, F_OK) == 0)
 			return (full);
 		free(full);
 		i++;
@@ -78,12 +78,7 @@ char	*resolve_path(char **envp, char *cmd)
 	if (strchr(cmd, '/'))
 	{
 		if (access(cmd, F_OK) == 0)
-		{
-			if (access(cmd, X_OK) == 0)
-				return (strdup(cmd));
-			/* File exists but not executable */
-			return (NULL);
-		}
+			return (strdup(cmd));
 		/* File doesn't exist */
 		return (NULL);
 	}
