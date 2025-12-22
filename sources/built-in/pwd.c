@@ -6,15 +6,15 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:18:47 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 20:33:07 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 11:22:57 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_pwd(void)
+int	ft_pwd(void)
 {
-	char *cwd;
+	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)

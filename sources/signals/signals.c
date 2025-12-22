@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:19:02 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 20:37:00 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 11:46:37 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,3 @@ void	handle_dquote_sigint(int sig)
 	rl_redisplay();
 	rl_done = 1;
 }
-

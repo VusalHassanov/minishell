@@ -6,13 +6,12 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/16 20:27:22 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:10:47 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* ORIGINAL MAIN - COMMENTED OUT FOR ALTERNATE TESTER */
 // static void	clean_system(t_shell *system)
 // {
 // 	if (system->token_list)
@@ -81,9 +80,11 @@
 // 	if (!system->envp)
 // 	{
 // 		free(system);
-// 		// ft_putstr_fd("minishell: failed to initialize environment\n", 2);
+// 		ft_putstr_fd("minishell: failed to initialize environment\n", 2);
 // 		return (NULL);
 // 	}
+// 	system->backup_fd[0] = -1;
+// 	system->backup_fd[1] = -1;
 // 	setup_parent_signals();
 // 	return (system);
 // }

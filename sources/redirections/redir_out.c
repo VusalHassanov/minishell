@@ -14,8 +14,8 @@
 
 int	ft_redir_out(char *target)
 {
-	int	fd;
-	char *clean_target;
+	int		fd;
+	char	*clean_target;
 
 	clean_target = remove_quotes(target);
 	if (!clean_target)

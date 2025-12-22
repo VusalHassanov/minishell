@@ -12,11 +12,10 @@
 
 #include "minishell.h"
 
-
 int	ft_redir_append(char *target)
 {
-	int	fd;
-	char *clean_target;
+	int		fd;
+	char	*clean_target;
 
 	clean_target = remove_quotes(target);
 	if (!clean_target)

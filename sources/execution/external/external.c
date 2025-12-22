@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:01:27 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 20:24:57 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:24:44 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,25 +34,6 @@ void	print_error_msg(const char *prefix, const char *msg, const char *suffix)
 		write(STDERR_FILENO, suffix, ft_strlen(suffix));
 }
 
-/* Optional: count similar commands and display suggestion */
-/* Pass envp if implementing: count_similar_in_path(envp, cmd) */
-
-// int	handle_command_not_found(char *cmd, int error_code)
-// {
-// 	if (error_code == 1)
-// 	{
-// 		if (cmd[0] == '.' && cmd[1] == '/' || cmd[0] == '/')
-// 		print_error_msg("minishell: ", cmd, ": No such file or directory\n");
-// 	else
-// 		print_error_msg("minishell: ", cmd, ": command not found\n");
-// 	return (127);
-// 	}
-// 	if (error_code == 2)
-// 	{
-// 		print_error_msg("minishell: ", cmd, ": Is a directory\n");
-// 		return (126);
-// 	}
-// }
 void	handle_command_not_found(char *cmd)
 {
 	if (cmd[0] == '.' && cmd[1] == '/' || cmd[0] == '/')
@@ -117,37 +98,6 @@ void    execute_child_process(t_ast *node, t_shell *system)
     handle_execve_error(node->argv[0], cmd_path);
     exit(126);
 }
-
-// void	execute_child_process(t_ast *node, t_shell *system)
-// {
-// 	char	*cmd_path;
-
-// 	if (!node || !node->argv)
-// 	{
-// 		print_error_msg("minishell: internal error: ", "node or argv is NULL\n",
-// 			NULL);
-// 		exit(1);
-// 	}
-// 	if (!system || !system->envp)
-// 	{
-// 		print_error_msg("minishell: internal error: ",
-// 			"system or envp is NULL\n", NULL);
-// 		exit(1);
-// 	}
-// 	cmd_path = resolve_path(system->envp, node->argv[0]);
-// 	if (!cmd_path)
-// 	{
-// 		exit(handle_command_not_found(node->argv[0], 1));
-// 	}
-// 	if (is_directory(cmd_path))
-// 	{
-// 		free(cmd_path);
-// 		exit(handle_command_not_found(node->argv[0], 2));
-// 	}
-// 	execve(cmd_path, node->argv, system->envp);
-// 	handle_execve_error(node->argv[0], cmd_path);
-// 	exit(126);
-// }
 
 int	execute_external(t_ast *node, t_shell *system)
 {
