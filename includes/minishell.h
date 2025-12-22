@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 11:50:38 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/22 12:22:08 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 13:33:40 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <sys/stat.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -151,6 +150,18 @@ char							*resolve_path(char **envp, char *cmd);
 int								set_up_redirections(t_ast *node,
 									t_shell *system);
 
+// External Utils
+void							print_error_msg(const char *prefix,
+									const char *msg, const char *suffix);
+void							handle_command_not_found(char *cmd);
+int								is_directory(const char *path);
+void							handle_execve_error(char *cmd, char *cmd_path);
+void							validate_node_and_system(t_ast *node,
+									t_shell *system);
+void							check_path_errors(char *cmd_path, char *cmd);
+void							execute_child_process(t_ast *node,
+									t_shell *system);
+
 // Execution Helper
 int								ft_reset_fds(int *fd);
 int								ft_backup_fds(int *fd);
@@ -158,17 +169,19 @@ char							**find_first_argument(char **argv);
 int								assign_redir(t_redir *current, t_shell *system);
 
 // Pipes
-void						create_pipe(t_ast *node, t_shell *system);
-pid_t						ft_fork_and_check_pipe(int *pipe_fd);
-void						ft_cleanup_pipe(int *pipe_fd, pid_t left, pid_t right,
-								t_shell *system);
-void						setup_pipe_redirect(int *pipe_fd, int child_type);
-void						ft_execute_pipe_child(t_ast *node, t_shell *system,
-								int *pipe_fd, int child_type);
-int							fork_left_child(t_ast *node, t_shell *system,
-								int *pipe_fd);
-int							fork_right_child(t_ast *node, t_shell *system,
-								int *pipe_fd, pid_t left);
+void							create_pipe(t_ast *node, t_shell *system);
+pid_t							ft_fork_and_check_pipe(int *pipe_fd);
+void							ft_cleanup_pipe(int *pipe_fd, pid_t left,
+									pid_t right, t_shell *system);
+void							setup_pipe_redirect(int *pipe_fd,
+									int child_type);
+void							ft_execute_pipe_child(t_ast *node,
+									t_shell *system, int *pipe_fd,
+									int child_type);
+int								fork_left_child(t_ast *node, t_shell *system,
+									int *pipe_fd);
+int								fork_right_child(t_ast *node, t_shell *system,
+									int *pipe_fd, pid_t left);
 
 // redirections
 int								ft_heredoc(int heredoc_fd, t_shell *system);

@@ -6,7 +6,7 @@
 #    By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/12/22 12:18:44 by mgunter          ###   ########.fr        #
+#    Updated: 2025/12/22 13:39:33 by mgunter          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,9 @@ EXEC_SRC = sources/execution/execution.c \
            sources/execution/execution_helper.c \
            sources/execution/execution_helper2.c \
            sources/execution/external/external.c \
-           sources/execution/external/search.c
+           sources/execution/external/search.c \
+           sources/execution/external/external_utils.c \
+		   sources/execution/external/external_utils2.c
 
 PIPES_SRC = sources/pipes/pipes.c \
             sources/pipes/pipes_helper.c
@@ -111,10 +113,9 @@ clean:
 # Clean everything
 fclean: clean
 	rm -f $(NAME)
-	rm -rf tests/running_test/test_parser
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 # Rebuild everything
 re: fclean all
 
-.PHONY: all clean fclean re test_parser test_builtin
+.PHONY: all clean fclean re

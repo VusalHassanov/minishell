@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:58:36 by martin            #+#    #+#             */
-/*   Updated: 2025/12/22 12:24:12 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:45:11 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,14 @@ static int	execute_redir_only(t_ast *node, t_shell *system)
 {
 	if (node->redir)
 	{
+		ft_backup_fds(system->backup_fd);
 		if (set_up_redirections(node, system) == ERROR)
 		{
+			ft_reset_fds(system->backup_fd);
 			system->exit_status = 1;
 			return (1);
 		}
+		ft_reset_fds(system->backup_fd);
 	}
 	system->exit_status = 0;
 	return (0);
