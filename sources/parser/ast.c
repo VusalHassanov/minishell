@@ -6,13 +6,13 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/22 11:43:54 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 15:57:57 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_redir	*fill_redirection_node(t_shell *system, t_redir **head,
+static t_redir	*fill_redirection_node(t_shell *system,
 		t_token_type type, char *value)
 {
 	t_redir	*redirection;
@@ -57,7 +57,7 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection,
 		if (!temp)
 			return (cleanup_redir_error(redirection, NULL));
 		redirection = temp;
-		redirection[count] = fill_redirection_node(system, redirection,
+		redirection[count] = fill_redirection_node(system,
 				(*current)->type, (*current)->next->value);
 		if (!redirection[count])
 			return (cleanup_redir_error(redirection, NULL));

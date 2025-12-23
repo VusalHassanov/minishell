@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:35:07 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/22 13:35:48 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:01:15 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	print_error_msg(const char *prefix, const char *msg, const char *suffix)
 
 void	handle_command_not_found(char *cmd)
 {
-	if (cmd[0] == '.' && cmd[1] == '/' || cmd[0] == '/')
+	if ((cmd[0] == '.' && cmd[1] == '/') || cmd[0] == '/')
 		print_error_msg("minishell: ", cmd, ": No such file or directory\n");
 	else
 		print_error_msg("minishell: ", cmd, ": command not found\n");

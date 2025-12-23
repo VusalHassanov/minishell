@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 11:50:38 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/22 13:33:40 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:45:42 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,14 +220,13 @@ int								is_in_single_quotes(char *str, int pos);
 char							*remove_quotes(char *str);
 
 // Signals
-extern volatile sig_atomic_t	g_signal;
+// extern volatile sig_atomic_t	g_signal;
 void							handle_sigint(int sig);
 void							handle_heredoc_sigint(int sig);
 int								check_signal_received(void);
 void							setup_parent_signals(void);
 void							setup_child_signals(void);
 void							setup_heredoc_signals(void);
-
 void							setup_dquote_signals(void);
 void							handle_dquote_sigint(int sig);
 

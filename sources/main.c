@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 22:30:09 by martin            #+#    #+#             */
-/*   Updated: 2025/12/22 13:36:56 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 17:01:20 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_shell	*system;
 	int		exit_status;
 
+	(void)argv;
 	if (argc == 1)
 	{
 		exit_status = 0;
@@ -201,6 +202,7 @@ int	main(int argc, char *argv[], char *envp[])
 // 	t_shell	*system;
 // 	int		exit_status;
 
+// 	(void)argv;
 // 	if (argc == 1)
 // 	{
 // 		exit_status = 0;
