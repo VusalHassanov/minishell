@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:50:46 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 15:50:24 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/16 20:12:52 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ static void	cd_error(const char *arg)
 {
 	write(2, "minishell: cd: ", 15);
 	if (arg)
-		write(2, arg, strlen(arg));
+		write(2, arg, ft_strlen(arg));
 	write(2, ": ", 2);
-	write(2, strerror(errno), strlen(strerror(errno)));
+	write(2, strerror(errno), ft_strlen(strerror(errno)));
 	write(2, "\n", 1);
 }
 
@@ -50,26 +50,27 @@ static int	cd_cleanup(char *oldpwd, char *target, int ret, int free_target)
 }
 
 // Main cd function
-int ft_cd(char **args, char ***envp)
+int	ft_cd(char **args, char ***envp)
 {
-    char    *oldpwd;
-    char    *target;
-    int     should_free_target;
-    if (args[2])
-    {
-        ft_putendl_fd("cd: too many arguments", 2);
-        return 1;
-    }
-    oldpwd = getcwd(NULL, 0);
-    target = cd_get_target(args, *envp);
-    if (!target)
-        return (cd_cleanup(oldpwd, NULL, 1, 0));
-    should_free_target = (args[1] && args[1][0] == '~' && args[1][1] == '/');
-    if (chdir(target) != 0)
-    {
-        cd_error(target);
-        return (cd_cleanup(oldpwd, target, 1, should_free_target));
-    }
-    update_pwd_env(envp, oldpwd);
-    return (cd_cleanup(oldpwd, target, 0, should_free_target));
+	char	*oldpwd;
+	char	*target;
+	int		should_free_target;
+
+	if (args[2])
+	{
+		ft_putendl_fd("cd: too many arguments", 2);
+		return (1);
+	}
+	oldpwd = getcwd(NULL, 0);
+	target = cd_get_target(args, *envp);
+	if (!target)
+		return (cd_cleanup(oldpwd, NULL, 1, 0));
+	should_free_target = (args[1] && args[1][0] == '~' && args[1][1] == '/');
+	if (chdir(target) != 0)
+	{
+		cd_error(target);
+		return (cd_cleanup(oldpwd, target, 1, should_free_target));
+	}
+	update_pwd_env(envp, oldpwd);
+	return (cd_cleanup(oldpwd, target, 0, should_free_target));
 }

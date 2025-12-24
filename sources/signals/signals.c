@@ -6,13 +6,13 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:19:02 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/14 17:37:40 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:59:37 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_signal = 0;
+static volatile sig_atomic_t	g_signal = 0;
 
 void	handle_sigint(int sig)
 {
@@ -25,12 +25,11 @@ void	handle_sigint(int sig)
 
 void	handle_heredoc_sigint(int sig)
 {
-	// g_signal = SIGINT;
+	(void)sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-	rl_done = 1;
 }
 
 int	check_signal_received(void)
@@ -42,14 +41,3 @@ int	check_signal_received(void)
 	}
 	return (0);
 }
-
-void	handle_dquote_sigint(int sig)
-{
-	g_signal = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-	rl_done = 1;
-}
-

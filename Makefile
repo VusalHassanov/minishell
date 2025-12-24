@@ -6,15 +6,14 @@
 #    By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/25 23:45:20 by vhasanov          #+#    #+#              #
-#    Updated: 2025/12/14 13:49:54 by mgunter          ###   ########.fr        #
+#    Updated: 2025/12/23 15:52:31 by mgunter          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiling
 NAME = minishell
-# CC = cc
-CC_FLAGS = -Wall -Wextra -Werror -g -O0
-CC_FLAGS = 
+CC = cc
+CC_FLAGS = -Wall -Wextra -Werror
 RL_FLAG = -lreadline
 
 # Libft
@@ -22,18 +21,59 @@ LIBFT_DIR = libraries/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 # Modules
-LEXING_SRC = $(wildcard sources/lexing/*.c)
-PARSER_SRC = $(wildcard sources/parser/*.c)
-EXPAND_SRC = $(wildcard sources/expansion/*.c)
-BUILTIN_SRC = $(wildcard sources/built-in/*.c) \
-              $(wildcard sources/built-in/built-in_helpers/*.c) \
-              $(wildcard sources/built-in/built-in_helpers/env_helper/*.c)
-SIGNALS_SRC = $(wildcard sources/signals/*.c)
-EXEC_SRC = $(wildcard sources/execution/*.c) \
-			$(wildcard sources/execution/external/*.c)
-PIPES_SRC = sources/pipes/pipes.c
-REDIRECT_SRC = $(wildcard sources/redirections/*.c)
-EXPAND_SRC = $(wildcard sources/expansion/*.c)
+LEXING_SRC = sources/lexing/tokens.c \
+             sources/lexing/tokens_checker.c \
+             sources/lexing/tokens_checker2.c \
+             sources/lexing/tokens_utils.c \
+             sources/lexing/tokens_utils2.c
+
+PARSER_SRC = sources/parser/ast.c \
+             sources/parser/ast_utils.c \
+             sources/parser/parser.c \
+             sources/parser/parser_utils.c
+
+EXPAND_SRC = sources/expansion/env_var_expansion.c \
+             sources/expansion/expand_exit.c \
+             sources/expansion/expander.c \
+             sources/expansion/quotes.c \
+             sources/expansion/str_replace_helper.c
+
+BUILTIN_SRC = sources/built-in/cd.c \
+              sources/built-in/echo.c \
+              sources/built-in/env.c \
+              sources/built-in/exit.c \
+              sources/built-in/export.c \
+              sources/built-in/pwd.c \
+              sources/built-in/unset.c \
+              sources/built-in/built-in_helpers/cd_helper.c \
+              sources/built-in/built-in_helpers/echo_helper.c \
+              sources/built-in/built-in_helpers/exit_helper.c \
+              sources/built-in/built-in_helpers/export_helper.c \
+              sources/built-in/built-in_helpers/helper.c \
+              sources/built-in/built-in_helpers/env_helper/env_helper.c \
+              sources/built-in/built-in_helpers/env_helper/env_helper2.c
+
+SIGNALS_SRC = sources/signals/signals.c \
+              sources/signals/signals_setup.c
+
+EXEC_SRC = sources/execution/execution.c \
+           sources/execution/execution_helper.c \
+           sources/execution/execution_helper2.c \
+           sources/execution/external/external.c \
+           sources/execution/external/search.c \
+           sources/execution/external/external_utils.c \
+		   sources/execution/external/external_utils2.c
+
+PIPES_SRC = sources/pipes/pipes.c \
+            sources/pipes/pipes_helper.c
+
+REDIRECT_SRC = sources/redirections/heredoc.c \
+               sources/redirections/heredoc_tempfile.c \
+               sources/redirections/heredoc_utils.c \
+               sources/redirections/redir_append.c \
+               sources/redirections/redir_in.c \
+               sources/redirections/redir_out.c
+
 MAIN_SRC = sources/main.c
 
 # Main Build
@@ -43,15 +83,6 @@ OBJ_DIR = objects
 
 SRC = $(MAIN_SRC) $(LEXING_SRC) $(PARSER_SRC) $(BUILTIN_SRC) $(SIGNALS_SRC) $(PIPES_SRC) $(EXEC_SRC) $(REDIRECT_SRC) $(EXPAND_SRC)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
-
-# Test Builds (without main minishell program!)
-TEST_PATH = tests/running_test
-
-TEST_PARSER_SRC = $(LEXING_SRC) $(PARSER_SRC)
-TEST_PARSER_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_PARSER_SRC))
-
-TEST_BUILTIN_SRC = $(BUILTIN_SRC)
-TEST_BUILTIN_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_BUILTIN_SRC))
 
 # Default target
 all: $(NAME)
@@ -73,15 +104,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(CC_FLAGS) $(OBJ) $(LIBFT) $(RL_FLAG) -o $(NAME)
 
-# Include rule to put executable into tests/running_tests
-test_parser: $(TEST_PARSER_OBJ) $(LIBFT)
-	@mkdir -p $(TEST_PATH)
-	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes tests/test_lexing/test_parsing.c $(RL_FLAG) $(TEST_PARSER_OBJ) $(LIBFT) -o $(TEST_PATH)/$@
-
-test_builtin: $(TEST_BUILTIN_OBJ) $(LIBFT)
-	@mkdir -p $(TEST_PATH)
-	$(CC) $(CC_FLAGS) -I$(INC_DIR) -I$(LIBFT_DIR)/includes tests/test_builtin/test_built-in.c $(RL_FLAG) $(TEST_PARSER_OBJ) $(LIBFT) -o $(TEST_PATH)/$@
-
 # Clean object files
 clean:
 	rm -rf $(OBJ_DIR)
@@ -90,10 +112,9 @@ clean:
 # Clean everything
 fclean: clean
 	rm -f $(NAME)
-	rm -rf tests/running_test/test_parser
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 # Rebuild everything
 re: fclean all
 
-.PHONY: all clean fclean re test_parser test_builtin
+.PHONY: all clean fclean re

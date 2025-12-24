@@ -32,9 +32,9 @@ char	*expand_exit_status(char *str, int pos, int exit_status)
 
 void	copy_exit_status(char *dst, char *src, char *exit_str, int pos)
 {
-	int i;
-	int j;
-	int k;
+	int	i;
+	int	j;
+	int	k;
 
 	i = 0;
 	j = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   search.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhasanov <vhasanov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 14:43:48 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/16 17:37:53 by vhasanov         ###   ########.fr       */
+/*   Updated: 2025/12/22 12:29:39 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*get_env_value(char **envp, const char *key)
 	i = 0;
 	while (envp[i])
 	{
-		if (!strncmp(envp[i], key, len) && envp[i][len] == '=')
+		if (!ft_strncmp(envp[i], key, len) && envp[i][len] == '=')
 			return (envp[i] + len + 1);
 		i++;
 	}
@@ -56,14 +56,13 @@ char	*search_paths(char **paths, char *cmd)
 		full = build_full_path(paths[i], cmd);
 		if (!full)
 			return (NULL);
-		if (access(full, X_OK) == 0)
+		if (access(full, F_OK) == 0)
 			return (full);
 		free(full);
 		i++;
 	}
 	return (NULL);
 }
-
 
 /* RESOLVE COMMAND */
 char	*resolve_path(char **envp, char *cmd)
@@ -74,20 +73,12 @@ char	*resolve_path(char **envp, char *cmd)
 
 	if (!cmd || !envp)
 		return (NULL);
-	/* If cmd contains '/', treat it as a path */
-	if (strchr(cmd, '/'))
+	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, F_OK) == 0)
-		{
-			if (access(cmd, X_OK) == 0)
-				return (strdup(cmd));
-			/* File exists but not executable */
-			return (NULL);
-		}
-		/* File doesn't exist */
+			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	/* Search in PATH */
 	path_var = get_env_value(envp, "PATH");
 	if (!path_var)
 		return (NULL);
@@ -129,7 +120,8 @@ char	*resolve_path(char **envp, char *cmd)
 // 		{
 // 			while ((entry = readdir(dir)) != NULL)
 // 			{
-// 				if (entry->d_type == DT_REG && !ft_strncmp(entry->d_name, cmd, cmd_len))
+// 				if (entry->d_type == DT_REG && !ft_strncmp(entry->d_name, cmd,
+// cmd_len))
 // 				{
 // 					full_path = build_full_path(paths[i], entry->d_name);
 // 					if (full_path && access(full_path, X_OK) == 0)

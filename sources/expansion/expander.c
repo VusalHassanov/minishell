@@ -6,42 +6,11 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:15:00 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 14:06:41 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 11:39:36 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void	filter_quotes(char *dest, const char *source, int *quote_flag)
-// {
-// 	int				i;
-// 	int				j;
-// 	t_parse_flags	status;
-
-// 	status = (t_parse_flags){0};
-// 	i = 0;
-// 	j = 0;
-// 	while (source[i])
-// 	{
-// 		if (is_quote_literal(source[i], &status))
-// 			dest[j++] = source[i];
-// 		else if (is_quote(source[i]))
-// 		{
-// 			if (is_open(&status))
-// 				status = (t_parse_flags){0};
-// 			else
-// 				assign_status(source[i], &status);
-// 			if (source[i] == '\"')
-// 				*quote_flag = TOKEN_DOUBLE_QUOTE;
-// 			else if (source[i] == '\'')
-// 				*quote_flag = TOKEN_SINGLE_QUOTE;
-// 		}
-// 		else
-// 			dest[j++] = source[i];
-// 		i++;
-// 	}
-// 	dest[j] = '\0';
-// }
 
 // 1) String quoted, not quoted, double quoted handling
 // 2) Iterate through string, No dollar sign, return
@@ -60,6 +29,8 @@ void	handle_expansion(char **argv, t_shell *system)
 	int		i;
 	char	*expanded;
 
+	if (!argv)
+		return ;
 	i = 0;
 	while (argv[i])
 	{
@@ -95,7 +66,7 @@ char	*expand_string(char *str, t_shell *system, int expand_flag)
 		else
 			i++;
 	}
-	if(expand_flag)
+	if (expand_flag)
 		return (result);
 	final = remove_quotes(result);
 	free(result);
@@ -113,7 +84,6 @@ char	*expand_variable(char *str, int *i, t_shell *system, int in_heredoc)
 		(*i)++;
 		return (str);
 	}
-	// In heredoc, quotes are NOT special - don't skip them
 	else if (!in_heredoc && (str[*i + 1] == '\'' || str[*i + 1] == '\"'))
 	{
 		(*i)++;

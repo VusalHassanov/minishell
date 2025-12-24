@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:24:52 by mgunter           #+#    #+#             */
-/*   Updated: 2025/12/15 12:24:03 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:56:58 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	free_tokens(t_token *tokens)
 
 int	dquote_end_of_file(char *line, char **token_string)
 {
-	if (!line || g_signal == SIGINT)
+	if (!line || check_signal_received() != 0)
 	{
 		if (*token_string)
 		{
@@ -66,13 +66,30 @@ int	dquote_end_of_file(char *line, char **token_string)
 		return (FALSE);
 }
 
+// int	dquote_end_of_file(char *line, char **token_string)
+// {
+// 	if (!line || g_signal == SIGINT)
+// 	{
+// 		if (*token_string)
+// 		{
+// 			free(*token_string);
+// 			*token_string = NULL;
+// 		}
+// 		if (line)
+// 			free(line);
+// 		return (TRUE);
+// 	}
+// 	else
+// 		return (FALSE);
+// }
+
 char	*dquote_handler(char *token_string, t_parse_flags *status)
 {
 	char	*line;
 	char	*new_string;
 
 	new_string = NULL;
-	setup_dquote_signals();
+	setup_heredoc_signals();
 	while (is_open(status))
 	{
 		line = readline("dquote> ");

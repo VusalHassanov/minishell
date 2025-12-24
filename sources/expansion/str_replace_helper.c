@@ -6,7 +6,7 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:53:55 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/12/10 17:28:42 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/22 11:43:02 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,13 @@ int	get_var_len(char *str, int pos)
 {
 	int	len;
 
-	len = 1; // Count the '$'
-	pos++;   // Move past '$'
-	// If first character after $ is a digit, only count that digit
+	len = 1;
+	pos++;
 	if (ft_isdigit(str[pos]))
 	{
-		len++; // Just the $ and the digit
+		len++;
 		return (len);
 	}
-	// Otherwise, count all valid variable name characters
 	while (str[pos] && (ft_isalnum(str[pos]) || str[pos] == '_'))
 	{
 		len++;
@@ -84,8 +82,8 @@ char	*remove_var(char *str, int pos)
 
 void	copy_without_var(char *dst, char *src, int pos, int var_len)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;

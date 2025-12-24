@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martin <martin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 13:00:28 by vhasanov          #+#    #+#             */
-/*   Updated: 2025/11/25 14:51:12 by martin           ###   ########.fr       */
+/*   Updated: 2025/12/22 11:28:35 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ char	*ft_getenv(char **envp, const char *name)
 char	**ft_env_add(char **envp, char *new_var)
 {
 	int		i;
+	int		j;
 	char	**new_env;
 
 	i = 0;
@@ -65,8 +66,12 @@ char	**ft_env_add(char **envp, char *new_var)
 	new_env = malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
 		return (NULL);
-	for (int j = 0; j < i; j++)
+	j = 0;
+	while (j < i)
+	{
 		new_env[j] = envp[j];
+		j++;
+	}
 	new_env[i] = new_var;
 	new_env[i + 1] = NULL;
 	free(envp);

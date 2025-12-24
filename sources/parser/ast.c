@@ -6,13 +6,13 @@
 /*   By: mgunter <mgunter@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:09:42 by martin            #+#    #+#             */
-/*   Updated: 2025/12/15 13:57:09 by mgunter          ###   ########.fr       */
+/*   Updated: 2025/12/23 15:57:57 by mgunter          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_redir	*fill_redirection_node(t_shell *system, t_redir **head,
+static t_redir	*fill_redirection_node(t_shell *system,
 		t_token_type type, char *value)
 {
 	t_redir	*redirection;
@@ -57,7 +57,7 @@ static t_redir	**append_redir(t_token **current, t_redir **redirection,
 		if (!temp)
 			return (cleanup_redir_error(redirection, NULL));
 		redirection = temp;
-		redirection[count] = fill_redirection_node(system, redirection,
+		redirection[count] = fill_redirection_node(system,
 				(*current)->type, (*current)->next->value);
 		if (!redirection[count])
 			return (cleanup_redir_error(redirection, NULL));
@@ -145,40 +145,3 @@ t_ast	*create_ast(t_token *start, t_token *end, t_shell *system)
 	}
 	return (node);
 }
-
-// static t_redir	**append_redir(t_token **current, t_redir **redirection,
-// 		t_shell *system)
-// {
-// 	t_redir **temp;
-// 	int count;
-
-// 	count = 0;
-// 	while (redirection && redirection[count])
-// 		count++;
-// 	if ((*current)->next->type == TOKEN_WORD)
-// 	{
-// 		temp = ft_realloc(redirection, sizeof(t_redir *) * (count + 1),
-// 				sizeof(t_redir *) * (count + 2));
-// 		if (!temp)
-// 			return (cleanup_redir_error(redirection, NULL));
-// 		redirection = temp;
-// 		redirection[count] = ft_calloc(sizeof(t_redir), 1);
-// 		if (!redirection[count])
-// 			return (cleanup_redir_error(redirection, NULL));
-// 		redirection[count]->type = (*current)->type;
-// 		redirection[count]->target = ft_strdup((*current)->next->value);
-// 		if (!redirection[count]->target)
-// 			return (cleanup_redir_error(redirection, redirection[count]));
-// 		if (redirection[count]->type == TOKEN_HEREDOC)
-// 		{
-// 			redirection[count]->heredoc_fd = get_input_heredoc_fd(redirection[count]->target,
-// 					system);
-// 			if (redirection[count]->heredoc_fd == -1)
-// 				return (cleanup_redir_error(redirection, redirection[count]));
-// 		}
-// 		count++;
-// 	}
-// 	(*current) = (*current)->next->next;
-// 	redirection[count] = NULL;
-// 	return (redirection);
-// }
